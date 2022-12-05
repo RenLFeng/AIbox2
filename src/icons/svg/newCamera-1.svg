@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="88px" height="88px" viewBox="0 0 88 88" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>摄像头管理-选中</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#A388FF" offset="0%"></stop>
+            <stop stop-color="#654EF4" offset="100%"></stop>
+        </linearGradient>
+        <filter x="-107.1%" y="-107.1%" width="314.3%" height="314.3%" filterUnits="objectBoundingBox" id="filter-2">
+            <feGaussianBlur stdDeviation="10" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+    </defs>
+    <g id="盒子管理" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="导航-icon" transform="translate(-18.000000, -119.000000)">
+            <g id="摄像头管理-选中" transform="translate(48.000000, 149.000000)">
+                <g id="编组-16">
+                    <rect id="矩形" fill="url(#linearGradient-1)" filter="url(#filter-2)" x="0" y="0" width="28" height="28" rx="4"></rect>
+                    <rect id="矩形备份" fill="#A09AFF" opacity="0.217820667" x="0" y="0" width="28" height="28" rx="4"></rect>
+                </g>
+                <path d="M17.130453,18.0625159 C17.130453,18.5793726 16.7361915,19 16.251731,19 L6.87872197,19 C6.39426149,19 6,18.5793726 6,18.0625159 L6,9.93748413 C6,9.42060785 6.39426149,9 6.87872197,9 L16.251731,9 C16.7361915,9 17.130453,9.42060785 17.130453,9.93748413 L17.130453,18.0625354 L17.130453,18.0625159 Z M21.0612912,9.84305199 L18.5217358,11.5290778 L18.5217358,16.4699845 L21.0441494,18.142961 C21.0712224,18.1669304 21.2182881,18.2857031 21.4471626,18.2857031 C21.7520622,18.2857031 22,18.0138737 22,17.6796301 L22,10.3203308 C22,9.98608718 21.7520431,9.71427734 21.4471626,9.71427734 C21.2182881,9.71427734 21.0712415,9.83305008 21.0612912,9.84305199 Z" id="形状备份" fill="#FFFFFF" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

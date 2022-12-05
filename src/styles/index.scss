@@ -1,0 +1,333 @@
+@import './variables.scss';
+@import './mixin.scss';
+@import './transition.scss';
+@import './element-ui.scss';
+@import './sidebar.scss';
+@import './btn.scss';
+
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif,;
+  // font-family:AliHeavy;
+  // src:url('../../assets/custom-theme/fonts/ttf/AlibabaPuHuiTi-2-105-Heavy.ttf')
+  
+}
+/* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+@font-face {
+  font-family: "阿里巴巴普惠体 2.0 35 Thin";font-weight: 250;src: url("//at.alicdn.com/wf/webfont/dP0mQroolvbW/_i8Ihjl7MbFY9XoE6CaPv.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/dP0mQroolvbW/35frxCPEciUYnWMV7UQ_e.woff") format("woff");
+  font-display: swap;
+}
+
+// label {
+//   font-weight: 700;
+// }
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#app {
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.no-padding {
+  padding: 0px !important;
+}
+
+.padding-content {
+  padding: 4px 0;
+}
+
+a:focus,
+a:active {
+  outline: none;
+  
+ background-color: rgba(225,  225, 225, 0.2);
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}
+
+.fr {
+  float: right;
+}
+
+.fl {
+  float: left;
+}
+
+.pr-5 {
+  padding-right: 5px;
+}
+
+.pl-5 {
+  padding-left: 5px;
+}
+
+.block {
+  display: block;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.inlineBlock {
+  display: block;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+aside {
+  background: #eef1f6;
+  padding: 8px 24px;
+  margin-bottom: 20px;
+  border-radius: 2px;
+  display: block;
+  line-height: 32px;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  color: #2c3e50;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  a {
+    color: #337ab7;
+    cursor: pointer;
+
+    &:hover {
+      color: rgb(32, 160, 255);
+    }
+  }
+}
+
+//main-container全局样式
+.app-container {
+  padding: 20px;
+}
+
+.components-container {
+  margin: 30px 50px;
+  position: relative;
+}
+
+.pagination-container {
+  margin-top: 30px;
+}
+
+.text-center {
+  text-align: center
+}
+
+.sub-navbar {
+  height: 50px;
+  line-height: 50px;
+  position: relative;
+  width: 100%;
+  text-align: right;
+  padding-right: 20px;
+  transition: 600ms ease position;
+  background: linear-gradient(90deg, rgba(32, 182, 249, 1) 0%, rgba(32, 182, 249, 1) 0%, rgba(33, 120, 241, 1) 100%, rgba(33, 120, 241, 1) 100%);
+
+  .subtitle {
+    font-size: 20px;
+    color: #fff;
+  }
+
+  &.draft {
+    background: #d0d0d0;
+  }
+
+  &.deleted {
+    background: #d0d0d0;
+  }
+}
+
+.link-type,
+.link-type:focus {
+  color: #337ab7;
+  cursor: pointer;
+
+  &:hover {
+    color: rgb(32, 160, 255);
+  }
+}
+
+.filter-container {
+  padding-bottom: 10px;
+
+  .filter-item {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 10px;
+  }
+}
+
+//refine vue-multiselect plugin
+.multiselect {
+  line-height: 16px;
+}
+
+.multiselect--active {
+  z-index: 1000 !important;
+}
+
+
+.el-card__header{
+  padding: 15px!important;
+  box-sizing: border-box;
+}
+.el-card__body{
+  padding: 20px!important;
+}
+.position-l{
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(0,-50%);
+}
+.position-r{
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(0,-50%);
+}
+.position-c{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
+.el-card + .el-card{
+  margin-top: 10px;
+}
+.cpointer{
+  cursor: pointer;
+}
+.color-tit{
+  color: #282828;
+  font-size: 18px;
+}
+.color-subtit{
+  color: #999;
+  font-size: 14px;
+}
+.colord{
+  color: #7558f4;
+}
+.color9{
+  color: #999;
+}
+.fontb{
+  font-weight: b;
+}
+.font24{
+  font-size: 24px;
+}
+.font22{
+  font-size: 22px;
+}
+.font20{
+  font-size: 20px;
+}
+.font18{
+  font-size: 18px;
+}
+.font16{
+  font-size: 16px;
+}
+.font14{
+  font-size: 14px;
+}
+.tc{
+  text-align: center;
+}
+.divider{
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 10px;
+}
+.w100{
+  width: 100%;
+}
+.h100{
+  height: 100%;
+}
+.auto-overflow{
+  overflow:auto
+}
+.object-fit{
+  object-fit: contain;
+}
+.fulldialog .el-dialog{
+  // height: calc(100% - 60px);
+  margin: 30px auto;
+  border-radius: 10px;
+  overflow: auto;
+}
+.fulldialog.h50 .el-dialog{
+  height: 50%;
+}
+.fulldialog .el-dialog .el-dialog__header{
+  border-bottom: 1px solid #f0f0f0;
+}
+.fulldialog .el-dialog .el-dialog__title,.fulldialog .el-dialog .slot-title {
+  color: #7558f4;
+  font-size: 24px;
+  font-weight: bold;
+}
+.fulldialog .el-dialog .slot-subtitle {
+  color:#999;
+  font-size: 14px;
+}
+.fulldialog .el-dialog .el-dialog__body{
+  // height: calc(100% - 100px);
+  padding: 30px 25px 25px;
+}
+.fulldialog .el-dialog:not(.is-fullscreen){
+margin-top: 30px !important;
+}
+.fulldialog .el-dialog  .el-dialog__footer .el-button{
+  padding: 12px 35px;
+}
+// .fulldialog .el-dialog  .el-dialog__footer{
+//   position: absolute;
+//   right: 10px;
+//   bottom: 10px;
+//   padding: 0;
+// }
+.mark{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}

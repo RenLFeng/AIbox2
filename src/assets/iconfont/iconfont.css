@@ -1,0 +1,55 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3463868 */
+  /* Color fonts */
+  src:
+       url('iconfont.woff2?t=1655178073804') format('woff2'),
+       url('iconfont.woff?t=1655178073804') format('woff'),
+       url('iconfont.ttf?t=1655178073804') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="el-icon-third"], [class*=" el-icon-third"]/*这里有空格*/
+
+{
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.el-icon-thirdpeople:before {
+  content: "\e670";
+}
+
+.el-icon-thirdaislogo:before {
+  content: "\e648";
+}
+
+.el-icon-thirdLED:before {
+  content: "\e622";
+}
+
+.el-icon-thirdsound-fill:before {
+  content: "\e865";
+}
+
+.el-icon-thirdCodeSandbox:before {
+  content: "\e87e";
+}
+
+.el-icon-thirdzhinengsuanfa:before {
+  content: "\e61e";
+}
+
+.el-icon-thirdnotification-filling:before {
+  content: "\e68b";
+}
+

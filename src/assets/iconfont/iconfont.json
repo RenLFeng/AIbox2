@@ -1,0 +1,58 @@
+{
+  "id": "3463868",
+  "name": "aibox",
+  "font_family": "iconfont",
+  "css_prefix_text": "el-icon-third",
+  "description": "盒子",
+  "glyphs": [
+    {
+      "icon_id": "745699",
+      "name": "people",
+      "font_class": "people",
+      "unicode": "e670",
+      "unicode_decimal": 58992
+    },
+    {
+      "icon_id": "1306362",
+      "name": "aislogo",
+      "font_class": "aislogo",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "2491262",
+      "name": "LED",
+      "font_class": "LED",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "4936646",
+      "name": "sound-fill",
+      "font_class": "sound-fill",
+      "unicode": "e865",
+      "unicode_decimal": 59493
+    },
+    {
+      "icon_id": "4936963",
+      "name": "CodeSandbox",
+      "font_class": "CodeSandbox",
+      "unicode": "e87e",
+      "unicode_decimal": 59518
+    },
+    {
+      "icon_id": "5978795",
+      "name": "intelligent-algorithm",
+      "font_class": "zhinengsuanfa",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "15838605",
+      "name": "notification-filling",
+      "font_class": "notification-filling",
+      "unicode": "e68b",
+      "unicode_decimal": 59019
+    }
+  ]
+}

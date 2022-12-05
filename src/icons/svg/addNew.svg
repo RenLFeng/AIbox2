@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>添加字符卡ID-icon</title>
+    <g id="配置led-字符卡分区管理" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="字符卡分区管理-添加分区" transform="translate(-889.000000, -515.000000)">
+            <g id="编组-18" transform="translate(460.000000, 408.000000)">
+                <g id="编组-20" transform="translate(60.000000, 104.000000)">
+                    <g id="添加字符卡ID-icon" transform="translate(369.000000, 3.000000)">
+                        <rect id="矩形备份-12" stroke="#7558F4" x="0.5" y="0.5" width="31" height="31" rx="4"></rect>
+                        <rect id="矩形" fill="#7558F4" x="15" y="6" width="2" height="19" rx="1"></rect>
+                        <rect id="矩形备份-49" fill="#7558F4" transform="translate(16.000000, 15.500000) rotate(-270.000000) translate(-16.000000, -15.500000) " x="15" y="6" width="2" height="19" rx="1"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

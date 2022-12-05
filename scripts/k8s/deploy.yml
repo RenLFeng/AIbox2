@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-box-ui
+  labels:
+    app: ai-box-ui
+    service: ai-box-ui
+spec:
+  ports:
+    - port: 80
+      name: http
+      protocol: TCP
+  selector:
+    app: ai-boxn-ui
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-box-ui-v1
+  labels:
+    app: ai-box-ui
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-box-ui
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: ai-box-ui
+        version: v1
+    spec:
+      containers:
+        - name: ai-box-ui
+          image: ${IMAGE}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: frontendconf
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+              readOnly: true
+      volumes:
+        - name: frontendconf
+          configMap:
+            name: nginx-frontend
+---
