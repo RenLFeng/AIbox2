@@ -37,7 +37,7 @@
           <el-table
             v-loading="loading"
             :data="sysboxnpuList"
-            style="margin:10px 0 0 0 "
+            style="margin: 10px 0 0 0"
             @selection-change="handleSelectionChange"
             @sort-change="handleSortChang"
           >
@@ -192,14 +192,14 @@ import {
   getSysBoxNpu,
   listSysBoxNpu,
   updateSysBoxNpu
-} from '@/api/box/sys-box-npu'
-import editDialog from './editDialog'
-import drawConfig from './components/drawConfig'
-import drawborderConfig from './components/drawBorderConfig'
-import { getNpuConfig } from '@/api/box/sys-box-npu'
-import { unWsLogout } from '@/api/ws'
+} from "@/api/box/sys-box-npu";
+import editDialog from "./editDialog";
+import drawConfig from "./components/drawConfig";
+import drawborderConfig from "./components/drawBorderConfig";
+import { getNpuConfig } from "@/api/box/sys-box-npu";
+import { unWsLogout } from "@/api/ws";
 export default {
-  name: 'SysBoxNpu',
+  name: "SysBoxNpu",
   components: {
     editDialog,
     drawConfig,
@@ -247,221 +247,221 @@ export default {
         upuId: 0,
         configData: undefined
       }
-    }
+    };
   },
   created() {
-    this.getList()
-    this.getDicts('sys_box_status').then(response => {
-      this.npuStatusOptions = response.data
-    })
+    this.getList();
+    this.getDicts("sys_box_status").then((response) => {
+      this.npuStatusOptions = response.data;
+    });
     // 权限控制
     // console.info("user", this.$store.state.user);
-    const roles = this.$store.state.user.roles
-    if (roles.indexOf('normal') !== -1) {
+    const roles = this.$store.state.user.roles;
+    if (roles.indexOf("normal") !== -1) {
       // 修改对应角色名，控制权限
-      this.showCol = false
+      this.showCol = false;
     }
-    this.id = this.guid()
-    this.group = 'boxNpu'
-    this.initWebSocket()
+    this.id = this.guid();
+    this.group = "boxNpu";
+    this.initWebSocket();
   },
   destroyed() {
-    console.log('断开boxWebsocket连接')
+    console.log("断开boxWebsocket连接");
     // 离开路由之后断开websocket连接
-    this.websock.close()
-    unWsLogout(this.id, this.group).then(response => {
-      console.log(response.data)
-    })
+    this.websock.close();
+    unWsLogout(this.id, this.group).then((response) => {
+      console.log(response.data);
+    });
   },
   methods: {
     /** 查询参数列表 */
     getList() {
-      this.loading = true
+      this.loading = true;
       listSysBoxNpu(this.addDateRange(this.queryParams, this.dateRange)).then(
-        response => {
-          this.sysboxnpuList = response.data.list
-          this.total = response.data.count
-          this.loading = false
-          this.boxWeight = 0
+        (response) => {
+          this.sysboxnpuList = response.data.list;
+          this.total = response.data.count;
+          this.loading = false;
+          this.boxWeight = 0;
           this.sysboxnpuList.forEach((item, index) => {
-            this.boxWeight += item.npuWeight
-          })
+            this.boxWeight += item.npuWeight;
+          });
         }
-      )
+      );
     },
 
     npuStatusFormat(row) {
-      return this.selectDictLabel(this.npuStatusOptions, row.npuStatus)
+      return this.selectDictLabel(this.npuStatusOptions, row.npuStatus);
     },
     // 关系
     // 文件
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageIndex = 1
-      this.getList()
+      this.queryParams.pageIndex = 1;
+      this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = []
-      this.resetForm('queryForm')
-      this.handleQuery()
+      this.dateRange = [];
+      this.resetForm("queryForm");
+      this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.npuId)
-      this.single = selection.length !== 1
-      this.multiple = !selection.length
+      this.ids = selection.map((item) => item.npuId);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset()
-      const npuId = row.npuId || this.ids
-      getSysBoxNpu(npuId).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = '修改盒子NPU配置表'
-        this.isEdit = true
-      })
+      this.reset();
+      const npuId = row.npuId || this.ids;
+      getSysBoxNpu(npuId).then((response) => {
+        this.form = response.data;
+        this.open = true;
+        this.title = "修改盒子NPU配置表";
+        this.isEdit = true;
+      });
     },
     /** 提交按钮 */
     submitForm: function() {
-      this.$refs['form'].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           if (this.form.npuId !== undefined) {
-            updateSysBoxNpu(this.form).then(response => {
+            updateSysBoxNpu(this.form).then((response) => {
               if (response.code === 200) {
-                this.msgSuccess(response.msg)
-                this.open = false
-                this.getList()
+                this.msgSuccess(response.msg);
+                this.open = false;
+                this.getList();
               } else {
-                this.msgError(response.msg)
+                this.msgError(response.msg);
               }
-            })
+            });
           } else {
-            addSysBoxNpu(this.form).then(response => {
+            addSysBoxNpu(this.form).then((response) => {
               if (response.code === 200) {
-                this.msgSuccess(response.msg)
-                this.open = false
-                this.getList()
+                this.msgSuccess(response.msg);
+                this.open = false;
+                this.getList();
               } else {
-                this.msgError(response.msg)
+                this.msgError(response.msg);
               }
-            })
+            });
           }
         }
-      })
+      });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      var Ids = (row.npuId && [row.npuId]) || this.ids
+      var Ids = (row.npuId && [row.npuId]) || this.ids;
 
-      this.$confirm('是否确认删除编号为"' + Ids + '"的数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
+      this.$confirm('是否确认删除编号为"' + Ids + '"的数据项?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
       })
         .then(function() {
-          return delSysBoxNpu({ ids: Ids })
+          return delSysBoxNpu({ ids: Ids });
         })
-        .then(response => {
+        .then((response) => {
           if (response.code === 200) {
-            this.msgSuccess(response.msg)
-            this.open = false
-            this.getList()
+            this.msgSuccess(response.msg);
+            this.open = false;
+            this.getList();
           } else {
-            this.msgError(response.msg)
+            this.msgError(response.msg);
           }
         })
-        .catch(function() {})
+        .catch(function() {});
     },
     /** 排序回调函数 */
     handleSortChang(column, prop, order) {
-      prop = column.prop
-      order = column.order
-      if (this.order !== '' && this.order !== prop + 'Order') {
-        this.queryParams[this.order] = undefined
+      prop = column.prop;
+      order = column.order;
+      if (this.order !== "" && this.order !== prop + "Order") {
+        this.queryParams[this.order] = undefined;
       }
-      if (order === 'descending') {
-        this.queryParams[prop + 'Order'] = 'desc'
-        this.order = prop + 'Order'
-      } else if (order === 'ascending') {
-        this.queryParams[prop + 'Order'] = 'asc'
-        this.order = prop + 'Order'
+      if (order === "descending") {
+        this.queryParams[prop + "Order"] = "desc";
+        this.order = prop + "Order";
+      } else if (order === "ascending") {
+        this.queryParams[prop + "Order"] = "asc";
+        this.order = prop + "Order";
       } else {
-        this.queryParams[prop + 'Order'] = undefined
+        this.queryParams[prop + "Order"] = undefined;
       }
-      this.getList()
+      this.getList();
     },
     handleSet(row) {
-      this.editDialog.boxId = row.bId
-      this.editDialog.npuId = row.npuId
-      this.editDialog.show = true
+      this.editDialog.boxId = row.bId;
+      this.editDialog.npuId = row.npuId;
+      this.editDialog.show = true;
     },
     editDialogToggle(value) {
-      this.editDialog.show = value
+      this.editDialog.show = value;
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.editDialog.boxId = Number(this.$route.query.boxId)
+      this.editDialog.boxId = Number(this.$route.query.boxId);
       // console.log("``````````" + this.editDialog.boxId)
 
-      this.editDialog.show = true
-      this.editDialog.npuId = undefined
+      this.editDialog.show = true;
+      this.editDialog.npuId = undefined;
     },
     handleDraw1(npuId, aId, cId) {
-      this.createDialog.npuId = npuId
-      getNpuConfig(npuId).then(response => {
+      this.createDialog.npuId = npuId;
+      getNpuConfig(npuId).then((response) => {
         // console.info(response)
         this.createDialog.configData =
-          response.data.npuConfig.filter(x => x.aiId === aId).length > 0
-            ? response.data.npuConfig.filter(x => x.aiId === aId)[0].aiConfig
-            : {}
-        this.createDialog.show = true
-      })
+          response.data.npuConfig.filter((x) => x.aiId === aId).length > 0
+            ? response.data.npuConfig.filter((x) => x.aiId === aId)[0].aiConfig
+            : {};
+        this.createDialog.show = true;
+      });
     },
     handleDraw2(npuId, aId, cId) {
-      this.createBorderDialog.npuId = npuId
-      getNpuConfig(npuId).then(response => {
+      this.createBorderDialog.npuId = npuId;
+      getNpuConfig(npuId).then((response) => {
         // console.info(response)
         this.createBorderDialog.configData =
-          response.data.npuConfig.filter(x => x.aiId === aId).length > 0
-            ? response.data.npuConfig.filter(x => x.aiId === aId)[0].aiConfig
-            : {}
-        this.createBorderDialog.show = true
-      })
+          response.data.npuConfig.filter((x) => x.aiId === aId).length > 0
+            ? response.data.npuConfig.filter((x) => x.aiId === aId)[0].aiConfig
+            : {};
+        this.createBorderDialog.show = true;
+      });
     },
     createDialogToggle(value) {
-      this.createDialog.show = value
+      this.createDialog.show = value;
     },
     createBorderDialogToggle(value) {
-      this.createBorderDialog.show = value
+      this.createBorderDialog.show = value;
     },
     initWebSocket() {
       // 初始化weosocket
       // console.log(this.$store.state.user.token)
       const wsuri =
-          'ws://' +
-          this.$store.state.system.info.sys_app_ip +
-          ':8880/ws/' +
-          this.id +
-          '/' +
-          this.group +
-          '?token=' +
-          this.$store.state.user.token
-      this.websock = new WebSocket(wsuri)
-      this.websock.onmessage = this.websocketonmessage
-      this.websock.onopen = this.websocketonopen
-      this.websock.onerror = this.websocketonerror
-      this.websock.onclose = this.websocketclose
+        "ws://" +
+        this.$store.state.system.info.sys_app_ip +
+        ":8880/ws/" +
+        this.id +
+        "/" +
+        this.group +
+        "?token=" +
+        this.$store.state.user.token;
+      this.websock = new WebSocket(wsuri);
+      this.websock.onmessage = this.websocketonmessage;
+      this.websock.onopen = this.websocketonopen;
+      this.websock.onerror = this.websocketonerror;
+      this.websock.onclose = this.websocketclose;
     },
     websocketonopen() {
       // 连接建立之后执行send方法发送数据
-      console.log('boxNPUWebsocket连接打开')
+      console.log("boxNPUWebsocket连接打开");
       //   const actions = { 'test': '12345' }
       //   this.websocketsend(JSON.stringify(actions))
     },
     websocketonerror() {
       // 连接建立失败重连
-      this.initWebSocket()
+      this.initWebSocket();
     },
     // 数据接收
     websocketonmessage(e) {
@@ -470,7 +470,7 @@ export default {
       // console.log(jsonData)
       // if (jsonData.code === 200) {
       // console.log(jsonData.data)
-      this.getList()
+      this.getList();
       // }
     },
     websocketsend(Data) {
@@ -479,21 +479,22 @@ export default {
     },
     websocketclose(e) {
       // 关闭
-      unWsLogout(this.id, this.group).then(response => {
-        console.log(response.data)
-      })
-      console.log('boxNPUWebsocket断开连接', e)
+      unWsLogout(this.id, this.group).then((response) => {
+        console.log(response.data);
+      });
+      console.log("boxNPUWebsocket断开连接", e);
     },
     guid() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(
-        c
-      ) {
-        var r = (Math.random() * 16) | 0
-        var v = c === 'x' ? r : (r & 0x3) | 0x8
-        return v.toString(16)
-      })
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+        /[xy]/g,
+        function(c) {
+          var r = (Math.random() * 16) | 0;
+          var v = c === "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        }
+      );
     }
   }
-}
+};
 </script>
 <style lang="scss"></style>

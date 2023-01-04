@@ -63,7 +63,7 @@ export function attendanceResetZero(data) {
 // 修改 人员计数  当前人数
 export function attendancesetAmount(data, query) {
   return request({
-    url: `/api/v1/sys-attendance/setAmount`,
+    url: `/api/v1/sys-attendance/setAmount/${query.groupId}`,
     method: "put",
     params: query,
     data: data

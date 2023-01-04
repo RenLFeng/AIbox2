@@ -31,166 +31,34 @@
     </div>
 
     <!-- 报警弹窗 -->
-    <el-dialog
-      class="emergency"
+    <alarmDialog
       :title="alarmBriefTitle"
-      :visible.sync="alarmBriefOuterVisible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="true"
-      width="500px"
-      :show-close="true"
-      center
-      @close="closeBriefDialog"
+      :dialog-center="true"
+      :open="alarmBriefOuterVisible"
+      :form="briefForm"
+      :show-col="false"
+      :before-close="closeBriefDialog"
     >
-      <el-row>
-        <el-col>
-          <el-form
-            ref="briefForm"
-            :model="briefForm"
-            label-width="120px"
-            label-position="left"
-          >
-            <el-divider
-              content-position="left"
-            ><i class="el-icon-picture" />抓拍图片</el-divider>
-            <my-image height="300px" :src="briefForm.imgFilePath" />
-            <el-divider
-              content-position="left"
-            ><i class="el-icon-warning" />告警信息</el-divider>
-            <el-form-item>
-              <span
-                slot="label"
-                class="formLabel"
-              ><span style="color: #f56c6c; font-size: 14px"> * </span>告警类型:</span>
-              <span>{{ briefForm.alarmName }}</span>
-            </el-form-item>
-            <el-form-item>
-              <span
-                slot="label"
-                class="formLabel"
-              ><span style="color: #f56c6c; font-size: 14px"> * </span>告警摄像头：</span>
-              <span>{{ briefForm.camName }}</span>
-            </el-form-item>
-            <el-form-item>
-              <span
-                slot="label"
-                class="formLabel"
-              ><span style="color: #f56c6c; font-size: 14px"> * </span>告警时间：</span>
-              <span>{{ parseTime(briefForm.createdAt, "{y}-{m}-{d}") }}
-                {{ parseTime(briefForm.createdAt, "{h}:{i}:{s}") }}</span>
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
-
-      <!-- 详情弹窗 -->
-      <el-dialog
-        class="globalWarning"
-        :title="alarmDetailsTitle"
-        :close-on-click-modal="false"
-        :visible.sync="alarmDetailsInnerVisible"
-        width="70%"
-        append-to-body
-        :close="closeDetailsInnerVisible"
-      >
-        <el-row :gutter="24">
-          <el-col :span="18">
-            <div v-if="detailForm.videoFilePath">
-              <el-divider
-                content-position="left"
-              ><i class="el-icon-video-camera-solid" />告警视频</el-divider>
-              <video
-                width="100%"
-                height="100%"
-                :src="detailForm.videoFilePath"
-                controls
-                loop
-                autoplay
-              />
-              <!-- <vue-core-video-player
-                :src="detailForm.videoFilePath"
-                :muted="true"
-                :autoplay="false"
-                :title="detailForm.alarmName"
-                :loop="true"
-                controls="auto"
-              /> -->
-            </div>
-            <div v-else>
-              <el-divider
-                content-position="left"
-              ><i class="el-icon-picture" />抓拍图片</el-divider>
-              <my-image height="500px" :src="detailForm.imgFilePath" />
-            </div>
-          </el-col>
-          <el-col :span="6">
-            <el-form
-              ref="detailForm"
-              :model="detailForm"
-              label-width="120px"
-              label-position="left"
-            >
-              <el-divider
-                content-position="left"
-              ><i class="el-icon-picture" />抓拍图片</el-divider>
-              <my-image height="170px" :src="detailForm.imgFilePath" />
-              <el-divider
-                content-position="left"
-              ><i class="el-icon-info" />告警详情</el-divider>
-              <el-form-item>
-                <span
-                  slot="label"
-                  class="formLabel"
-                ><span style="color: #f56c6c; font-size: 14px"> * </span>告警日期：</span>
-                <span>{{
-                  parseTime(detailForm.createdAt, "{y}-{m}-{d}")
-                }}</span>
-              </el-form-item>
-              <el-form-item>
-                <span
-                  slot="label"
-                  class="formLabel"
-                ><span style="color: #f56c6c; font-size: 14px"> * </span>告警时间：</span>
-                <span>{{
-                  parseTime(detailForm.createdAt, "{h}:{i}:{s}")
-                }}</span>
-              </el-form-item>
-              <el-form-item>
-                <span
-                  slot="label"
-                  class="formLabel"
-                ><span style="color: #f56c6c; font-size: 14px"> * </span>告警摄像头：</span>
-                <span>{{ detailForm.camName }}</span>
-              </el-form-item>
-              <el-form-item>
-                <span
-                  slot="label"
-                  class="formLabel"
-                ><span style="color: #f56c6c; font-size: 14px"> * </span>告警盒子：</span>
-                <span>{{ detailForm.boxName }}</span>
-              </el-form-item>
-              <el-form-item>
-                <span
-                  slot="label"
-                  class="formLabel"
-                ><span style="color: #f56c6c; font-size: 14px"> * </span>告警类型：</span>
-                <span>{{ detailForm.alarmName }}</span>
-              </el-form-item>
-            </el-form>
-          </el-col>
-        </el-row>
-        <div slot="footer" class="dialog-footer">
-          <el-button
-            type="danger"
-            plain
-            @click="closeDetailsInnerVisible"
-          >关 闭</el-button>
-        </div>
-      </el-dialog>
-      <div slot="footer" class="emergencyDetails">
+      <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="lookDetail">查看详情</el-button>
       </div>
-    </el-dialog>
+    </alarmDialog>
+    <!-- 报警详情弹窗 -->
+    <alarmDialog
+      :global-dialog="false"
+      :title="alarmDetailsTitle"
+      :open="alarmDetailsInnerVisible"
+      :form="detailForm"
+      :before-close="closeDetailsInnerVisible"
+    >
+      <div slot="footer" class="dialog-footer">
+        <el-button
+          type="danger"
+          plain
+          @click="closeDetailsInnerVisible"
+        >关 闭</el-button>
+      </div>
+    </alarmDialog>
   </div>
 </template>
 
@@ -201,6 +69,7 @@ import ResizeMixin from "./mixin/ResizeHandler";
 import { mapState } from "vuex";
 import variables from "@/styles/variables.scss";
 import { unWsLogout } from "@/api/ws";
+import alarmDialog from "@/components/alarmDialog/dialog";
 export default {
   name: "Layout",
   components: {
@@ -209,7 +78,8 @@ export default {
     RightPanel,
     Settings,
     Sidebar,
-    TagsView
+    TagsView,
+    alarmDialog
   },
   mixins: [ResizeMixin],
   data() {
@@ -335,14 +205,16 @@ export default {
       this.$store.dispatch("app/closeSideBar", { withoutAnimation: false });
     },
     closeBriefDialog() {
-      // console.log('关闭告警了===========')
       this.alarmBriefOuterVisible = false;
-      this.resetBriefForm();
+      setTimeout(() => {
+        this.resetBriefForm();
+      }, 200);
     },
     closeDetailsInnerVisible() {
       this.alarmDetailsInnerVisible = false;
-      this.alarmBriefOuterVisible = false;
-      this.resetDetailForm();
+      setTimeout(() => {
+        this.resetDetailForm();
+      }, 200);
     },
     // 表单重置
     resetBriefForm() {
@@ -385,6 +257,7 @@ export default {
       this.resetForm("detailForm");
     },
     lookDetail() {
+      this.detailForm = this.briefForm;
       this.alarmDetailsInnerVisible = true;
     },
     initWebSocket() {
@@ -418,17 +291,28 @@ export default {
     },
     websocketonmessage(e) {
       // 数据接收
+      // let dbgdata={
+      //   alarmId:13094210113381,
+      //   alarmName:"离岗告警",
+      //   boxName:"BOX-SHOUXING2215A000080",
+      //   camName:"10.20.10.107",
+      //   createdAt:"2022-12-13T10:23:51.129+08:00",
+      //   imgFilePath:"http://10.20.10.161:8880/static/alarm-img/20221213/4293x1230_102350827287_1002.jpg",
+      //   videoFilePath:"http://10.20.10.161:8880/static/alarm-video/20221213/4293x1230_102330844050_
+      // }
       // console.log(e)
       console.log("---------------全局Socket消息通知---------------");
       // console.log('1111全局Socket消息通知' + JSON.stringify(e.data))
-
       // //发现消息进入    开始处理前端触发逻辑
       const jsonData = JSON.parse(e.data);
       console.log("Socket data", jsonData);
       this.alarmBriefOuterVisible = true;
       this.briefForm = jsonData;
-      this.detailForm = jsonData;
-      this.alarmBriefTitle = jsonData.alarmDescribe;
+      // this.detailForm = jsonData;
+      jsonData.alarmDescribe &&
+        (() => {
+          this.alarmBriefTitle = jsonData.alarmDescribe;
+        })();
     },
     websocketsend(Data) {
       // 数据发送

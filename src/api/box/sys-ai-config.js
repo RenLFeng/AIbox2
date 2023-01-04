@@ -125,11 +125,11 @@ export function updateLine(data) {
     data: data
   });
 }
-// 移除算法
-export function removeAiFlow(data) {
+// 查询是否可移除算法
+export function removeAiFlow(query) {
   return request({
     url: "/api/v1/aiFlow",
     method: "get",
-    data: data
+    params: query
   });
 }

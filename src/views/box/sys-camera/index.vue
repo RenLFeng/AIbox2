@@ -389,6 +389,7 @@
                     size="mini"
                     type="text"
                     icon="el-icon-edit"
+                    class="camera-btn"
                     @click="handleUpdate(scope.row)"
                   >修改
                   </el-button>
@@ -397,7 +398,7 @@
                 <div>
                   <el-button
                     v-permisaction="['admin:syscamera:remove']"
-                    class="del"
+                    class="del camera-btn"
                     size="mini"
                     type="text"
                     icon="el-icon-delete"
@@ -428,6 +429,7 @@
               :model="form"
               :rules="rules"
               label-position="left"
+              label-width="86px"
             >
               <el-col :span="24">
                 <el-divider
@@ -437,7 +439,7 @@
                 </el-divider>
               </el-col>
               <el-col :span="24">
-                <el-form-item label="名称" prop="camName" label-width="60px">
+                <el-form-item label="名称" prop="camName">
                   <el-input
                     v-model="form.camName"
                     placeholder="请输入摄像头名称"
@@ -450,11 +452,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  label="厂商"
-                  prop="camManufacturer"
-                  label-width="60px"
-                >
+                <el-form-item label="厂商" prop="camManufacturer">
                   <el-select
                     v-model="form.camManufacturer"
                     placeholder="请选择摄像头厂商"
@@ -472,12 +470,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  label="型号"
-                  prop="camModel"
-                  label-width="50px"
-                  @change="change"
-                >
+                <el-form-item label="型号" prop="camModel" @change="change">
                   <el-input
                     v-model="form.camModel"
                     placeholder="请选择摄像头型号"
@@ -490,11 +483,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  label="外观类型"
-                  prop="camType"
-                  label-width="80px"
-                >
+                <el-form-item label="外观类型" prop="camType">
                   <el-select
                     v-model="form.camType"
                     placeholder="请选择外观类型"
@@ -511,11 +500,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  label="传输类型"
-                  prop="camForm"
-                  label-width="80px"
-                >
+                <el-form-item label="传输类型" prop="camForm">
                   <el-select
                     v-model="form.camForm"
                     placeholder="请选择传输类型"
@@ -538,7 +523,7 @@
                 </el-divider>
               </el-col>
               <el-col :span="24">
-                <el-form-item label="IP" prop="camIp" label-width="50px">
+                <el-form-item label="IP" prop="camIp">
                   <el-input
                     v-model="form.camIp"
                     placeholder="请输入摄像头IP地址"
@@ -552,11 +537,7 @@
               </el-col>
 
               <el-col :span="24">
-                <el-form-item
-                  label="账号"
-                  prop="camUserName"
-                  label-width="60px"
-                >
+                <el-form-item label="账号" prop="camUserName">
                   <el-input
                     v-model="form.camUserName"
                     placeholder="请输入摄像头账号"
@@ -567,11 +548,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  label="密码"
-                  prop="camPassword"
-                  label-width="60px"
-                >
+                <el-form-item label="密码" prop="camPassword">
                   <el-input
                     v-model="form.camPassword"
                     placeholder="请输入摄像头密码"
@@ -583,7 +560,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item label="端口" prop="camPort" label-width="60px">
+                <el-form-item label="端口" prop="camPort">
                   <el-input
                     v-model="form.camPort"
                     placeholder="请输入摄像头端口号"
@@ -592,12 +569,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  v-if="showCol"
-                  label="通道号"
-                  prop="camSequence"
-                  label-width="80px"
-                >
+                <el-form-item v-if="showCol" label="通道号" prop="camSequence">
                   <el-input-number
                     v-model="form.camSequence"
                     controls-position="right"
@@ -607,12 +579,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  v-if="showCol"
-                  label="视频编码"
-                  prop="camCoding"
-                  label-width="80px"
-                >
+                <el-form-item v-if="showCol" label="视频编码" prop="camCoding">
                   <el-select
                     v-model="form.camCoding"
                     placeholder="请选择视频编码"
@@ -628,11 +595,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  label="RTSP地址"
-                  prop="pullStreamUrl"
-                  label-width="80px"
-                >
+                <el-form-item label="RTSP地址" prop="pullStreamUrl">
                   <el-input
                     v-model="form.pullStreamUrl"
                     placeholder="请输入主码流RTSP地址"
@@ -645,7 +608,6 @@
                   v-if="showCol"
                   label="分发地址"
                   prop="pushStreamUrl"
-                  label-width="80px"
                 >
                   <el-input
                     v-model="form.pushStreamUrl"
@@ -658,7 +620,6 @@
                   v-if="showCol"
                   label="子码流地址"
                   prop="minorRtspUrl"
-                  label-width="90px"
                 >
                   <el-input
                     v-model="form.minorRtspUrl"
@@ -675,22 +636,12 @@
                 </el-divider>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  v-if="showCol"
-                  label="序列号"
-                  prop="camSno"
-                  label-width="80px"
-                >
+                <el-form-item v-if="showCol" label="序列号" prop="camSno">
                   <el-input v-model="form.camSno" placeholder="摄像头序列号" />
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  v-if="showCol"
-                  label="可视半径"
-                  prop="camRadius"
-                  label-width="80px"
-                >
+                <el-form-item v-if="showCol" label="可视半径" prop="camRadius">
                   <el-input
                     v-model="form.camRadius"
                     placeholder="摄像头可视半径"
@@ -702,7 +653,6 @@
                   v-if="showCol"
                   label="通道总数"
                   prop="camChannelSum"
-                  label-width="80px"
                 >
                   <el-input-number
                     v-model="form.camChannelSum"
@@ -714,52 +664,27 @@
               </el-col>
 
               <el-col :span="24">
-                <el-form-item
-                  v-if="showCol"
-                  label="经度"
-                  prop="camLongitude"
-                  label-width="50px"
-                >
+                <el-form-item v-if="showCol" label="经度" prop="camLongitude">
                   <el-input v-model="form.camLongitude" placeholder="经度" />
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  v-if="showCol"
-                  label="纬度"
-                  prop="camLatitude"
-                  label-width="50px"
-                >
+                <el-form-item v-if="showCol" label="纬度" prop="camLatitude">
                   <el-input v-model="form.camLatitude" placeholder="纬度" />
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  v-if="showCol"
-                  label="海拔"
-                  prop="camAltitude"
-                  label-width="50px"
-                >
+                <el-form-item v-if="showCol" label="海拔" prop="camAltitude">
                   <el-input v-model="form.camAltitude" placeholder="海拔" />
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  v-if="showCol"
-                  label="塔高"
-                  prop="camTowerHeight"
-                  label-width="50px"
-                >
+                <el-form-item v-if="showCol" label="塔高" prop="camTowerHeight">
                   <el-input v-model="form.camTowerHeight" placeholder="塔高" />
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item
-                  v-if="showCol"
-                  label="备注"
-                  prop="camNote"
-                  label-width="50px"
-                >
+                <el-form-item v-if="showCol" label="备注" prop="camNote">
                   <el-input v-model="form.camNote" placeholder="备注" />
                 </el-form-item>
               </el-col>
@@ -786,6 +711,7 @@
           <!--           <addCameraVue :title="title" :visible.sync="open" /> -->
           <!-- 删除摄像头没取消关联提示框 -->
           <el-dialog
+            title="提示"
             :visible.sync="dialogVisible"
             width="20%"
             center
@@ -807,7 +733,7 @@
                 style="width: 160px"
               >
             </div>
-            <div style="color: #404554; padding-top: 30px; text-align: center">
+            <div style="color: #404554; text-align: center">
               摄像头未关联算法时，才可删除！！
             </div>
             <span slot="footer" class="dialog-footer">
@@ -1364,7 +1290,10 @@ export default {
       console.log(row);
       // this.dialogVisible = true
       if (row.boxIdNameStatusList.length > 0) {
-        this.dialogVisible = true;
+        // this.dialogVisible = true;
+        this.$alert("  摄像头未关联算法时，才可删除！！", "提示", {
+          center: true
+        });
       } else {
         this.$confirm(
           '删除后将不可恢复!  是否确认删除摄像头名称为"' +
@@ -1629,5 +1558,8 @@ export default {
     font-size: 16px;
     border-radius: 4px;
   }
+}
+.camera-btn {
+  padding: 4px 10px;
 }
 </style>

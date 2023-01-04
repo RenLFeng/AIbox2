@@ -116,7 +116,7 @@ export function getRelateCam(aiId) {
   })
 }
 
-// 流程算法api
+// 流程算法api集合
 export function sysAiFlow(option = {}) {
   const params = option.query ? option.query : ''
   const senData = option.data ? option.data : {}

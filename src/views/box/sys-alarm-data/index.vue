@@ -172,132 +172,15 @@
             </div>
             <el-form-item />
           </el-form>
-
           <!-- 报警详情弹窗 -->
-          <el-dialog
-            class="alarmDetails"
+          <alarmDialog
+            :global-dialog="false"
             :title="title"
-            :close-on-click-modal="false"
-            :visible.sync="open"
-            width="70%"
-            append-to-body
+            :open="open"
+            :form="form"
+            :show-col="showCol"
             :before-close="cancel"
           >
-            <el-row :gutter="24">
-              <el-col :span="18">
-                <div v-if="form.videoFilePath">
-                  <el-divider content-position="left">告警视频</el-divider>
-                  <video width="100%" height="100%" :src="form.videoFilePath" controls loop autoplay />
-                  <!-- <vue-core-video-player
-                    :src="form.videoFilePath"
-                    :muted="true"
-                    :autoplay="false"
-                    :title="form.alarmName"
-                    :loop="true"
-                    controls="auto"
-                  /> -->
-                </div>
-                <div v-else>
-                  <div v-if="form.imgFilePath">
-                    <el-divider content-position="left">抓拍图片</el-divider>
-                    <my-image
-                      :src="form.imgFilePath"
-                      :preview-list="form.imgFilePathList"
-                      height="530px"
-                    />
-                  </div>
-                </div>
-              </el-col>
-              <el-col :span="6">
-                <el-form
-                  ref="form"
-                  :model="form"
-                  label-width="120px"
-                  label-position="right"
-                >
-                  <el-divider content-position="left">抓拍图片</el-divider>
-                  <my-image
-                    height="170px"
-                    :src="form.imgFilePath"
-                    :preview-list="showCol ? form.imgFilePathList : []"
-                  />
-                  <el-divider content-position="left">告警详情</el-divider>
-                  <el-form-item>
-                    <span
-                      slot="label"
-                      class="formLabel"
-                    ><span style="color: #f56c6c; font-size: 14px"> * </span>告警日期：</span>
-                    <span>{{ parseTime(form.createdAt, "{y}-{m}-{d}") }}</span>
-                  </el-form-item>
-                  <el-form-item>
-                    <span
-                      slot="label"
-                      class="formLabel"
-                    ><span style="color: #f56c6c; font-size: 14px"> * </span>告警时间：</span>
-                    <span>{{ parseTime(form.createdAt, "{h}:{i}:{s}") }}</span>
-                  </el-form-item>
-                  <el-form-item>
-                    <span
-                      slot="label"
-                      class="formLabel"
-                    ><span style="color: #f56c6c; font-size: 14px"> * </span>告警摄像头：</span>
-                    <span>{{ form.camName }}</span>
-                  </el-form-item>
-                  <el-form-item>
-                    <span
-                      slot="label"
-                      class="formLabel"
-                    ><span style="color: #f56c6c; font-size: 14px"> * </span>告警盒子：</span>
-                    <span>{{ form.boxName }}</span>
-                  </el-form-item>
-                  <el-form-item>
-                    <span
-                      slot="label"
-                      class="formLabel"
-                    ><span style="color: #f56c6c; font-size: 14px"> * </span>告警类型：</span>
-                    <span>{{ form.alarmName }}</span>
-                  </el-form-item>
-                </el-form>
-              </el-col>
-            </el-row>
-            <!-- 报警处理弹窗 -->
-            <el-dialog
-              width="30%"
-              title="告警处理"
-              :visible.sync="innerVisible"
-              append-to-body
-            >
-              <el-form
-                ref="isConfirmForm"
-                :model="isConfirmForm"
-                :rules="isConfirmRules"
-                label-width="100px"
-              >
-                <el-form-item
-                  label="处理状态"
-                  prop="isConfirm"
-                ><el-select
-                  v-model="isConfirmForm.isConfirm"
-                  clearable
-                  size="small"
-                >
-                  <el-option
-                    v-for="dict in isConfirmOptions"
-                    :key="dict.value"
-                    :label="dict.label"
-                    :value="dict.value"
-                  />
-                </el-select>
-                </el-form-item>
-              </el-form>
-              <div slot="footer" class="dialog-footer">
-                <el-button
-                  type="primary"
-                  @click="isConfirmSubmitForm"
-                >确 定</el-button>
-                <el-button @click="isConfirmCancel">取 消</el-button>
-              </div>
-            </el-dialog>
             <div slot="footer" class="dialog-footer">
               <el-button
                 v-if="showCol"
@@ -306,7 +189,7 @@
               >处 理</el-button>
               <el-button type="danger" plain @click="cancel">关 闭</el-button>
             </div>
-          </el-dialog>
+          </alarmDialog>
         </el-card>
         <el-card>
           <el-table
@@ -490,6 +373,44 @@
           />
         </el-card>
       </div>
+      <!-- 报警处理弹窗 -->
+      <el-dialog
+        width="30%"
+        title="告警处理"
+        :visible.sync="isConfirmVisible"
+        append-to-body
+      >
+        <el-form
+          ref="isConfirmForm"
+          :model="isConfirmForm"
+          :rules="isConfirmRules"
+          label-width="100px"
+        >
+          <el-form-item
+            label="处理状态"
+            prop="isConfirm"
+          ><el-select
+            v-model="isConfirmForm.isConfirm"
+            clearable
+            size="small"
+          >
+            <el-option
+              v-for="dict in isConfirmOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button
+            type="primary"
+            @click="isConfirmSubmitForm"
+          >确 定</el-button>
+          <el-button @click="isConfirmCancel">取 消</el-button>
+        </div>
+      </el-dialog>
     </template>
   </BasicLayout>
 </template>
@@ -513,9 +434,12 @@ import { getAllCameraName, getAllCameraNameDict } from "@/api/box/sys-camera";
 import { getAllAiName, getAllAiNameDict } from "@/api/box/sys-ai";
 import { unWsLogout } from "@/api/ws";
 import { strObject } from "@/utils";
+import alarmDialog from "@/components/alarmDialog/dialog";
 export default {
   name: "SysAlarmData",
-  components: {},
+  components: {
+    alarmDialog
+  },
   data() {
     return {
       imgPreviewSrcList: [],
@@ -539,7 +463,7 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
-      innerVisible: false,
+      isConfirmVisible: false,
       isEdit: false,
 
       allAlarmFormDialog: false,
@@ -692,6 +616,13 @@ export default {
     this.group = "alarmList";
     this.initWebSocket();
   },
+  activated() {},
+  // deactivated() {
+  //   this.websock.close();
+  //   unWsLogout(this.id, this.group).then((response) => {
+  //     // console.log(response.data)
+  //   });
+  // },
   destroyed() {
     // console.log('断开webImgWebsocket连接')
     // 离开路由之后断开websocket连接
@@ -716,19 +647,18 @@ export default {
     // 告警详情取消按钮
     cancel() {
       this.open = false;
-      this.innerVisible = false;
       setTimeout(() => {
         this.reset();
       }, 500);
     },
     // 处理窗口取消按钮
     isConfirmCancel() {
-      this.innerVisible = false;
+      this.isConfirmVisible = false;
       this.isConfirmReset();
     },
     // 告警详情处理按钮
     confirm() {
-      this.innerVisible = true;
+      this.isConfirmVisible = true;
       this.isConfirmForm.alarmId = this.form.alarmId;
       // this.isConfirmForm.isConfirm = this.form.isConfirm
     },
@@ -867,7 +797,7 @@ export default {
             UpdateAlarmDataConfirm(this.isConfirmForm).then((response) => {
               if (response.code === 200) {
                 this.msgSuccess(response.msg);
-                this.innerVisible = false;
+                this.isConfirmVisible = false;
                 this.getList();
               } else {
                 this.msgError(response.msg);
@@ -921,11 +851,11 @@ export default {
     handlePush(row) {
       pushSysAlarmData(row.alarmId).then((response) => {
         if (response.code === 200) {
-          this.msgSuccess(response.msg)
+          this.msgSuccess(response.msg);
         } else {
-          this.msgError(response.msg)
+          this.msgError(response.msg);
         }
-      })
+      });
     },
     /** 查询ProductName参数列表 */
     getAllProductName() {
@@ -978,10 +908,9 @@ export default {
     },
     // 初始化 form.imgFilePath字段  (2.4版本为 Array)
     initImgFilePath(imgFilePath) {
-      var tempPath = imgFilePath;
+      let tempPath = imgFilePath;
       imgFilePath = strObject(imgFilePath);
       if (imgFilePath && Array.isArray(imgFilePath) && imgFilePath.length) {
-        // eslint-disable-next-line no-unused-vars
         tempPath = imgFilePath[0].imgUrl;
       }
       return tempPath;
@@ -1036,24 +965,20 @@ export default {
     websocketonmessage(e) {
       // console.log('数据接收',e.data)
       const jsonData = JSON.parse(e.data);
-      // console.log(jsonData)
-      // console.log(jsonData.data)
+      // console.log("告警记录update", jsonData);
       if (this.queryParams.pageIndex === 1) {
+        const pageSize = this.queryParams.pageSize;
         let _temp = [];
         if (jsonData) {
           _temp = [jsonData];
         }
         if (_temp.length) {
-          let sysAlarmDataList = JSON.parse(
-            JSON.stringify(this.sysAlarmDataList)
-          );
-          sysAlarmDataList = [..._temp, ...sysAlarmDataList];
-          // console.log(sysAlarmDataList)
-          if (sysAlarmDataList.length > 10) {
-            // console.log(sysAlarmDataList)
-            sysAlarmDataList = sysAlarmDataList.slice(0, 10);
+          let tempListData = JSON.parse(JSON.stringify(this.sysAlarmDataList));
+          tempListData = [..._temp, ...tempListData];
+          if (tempListData.length > pageSize) {
+            tempListData = tempListData.slice(0, pageSize);
           }
-          this.sysAlarmDataList = sysAlarmDataList;
+          this.sysAlarmDataList = tempListData;
         }
       }
     },

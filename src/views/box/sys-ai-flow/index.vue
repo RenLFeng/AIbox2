@@ -4,47 +4,66 @@
       <div class="main-box flow-ai">
         <el-card class="box-card">
           <el-row class="title-wrap">
-            <el-col :span="20">
-              <div class="grid-content bg-purple input-wrap">
-                <label for="">输入查询</label>
-                <el-input
-                  v-model="seachName"
-                  clearable
-                  placeholder="流程名称"
-                  prefix-icon="el-icon-search"
-                />
-              </div>
-            </el-col>
-            <el-col :span="4">
-              <div class="grid-content bg-purple-light">
-                <el-button type="primary" @click="seachFn">查询</el-button>
+            <el-col :span="24">
+              <div style="display: flex; justify-content: space-between">
+                <div class="grid-content bg-purple input-wrap">
+                  <label for="" class="">输入查询</label>
+                  <el-input
+                    v-model="seachName"
+                    clearable
+                    placeholder="流程名称"
+                    prefix-icon="el-icon-search"
+                  />
+                  <el-button
+                    style="margin-left: 15px"
+                    type="primary"
+                    @click="seachFn('filter')"
+                  >查询</el-button>
+                  <el-button
+                    icon="el-icon-refresh"
+                    @click="seachFn('reset')"
+                  >重置</el-button>
+                </div>
+                <div style="padding-right: 10px">
+                  <el-button
+                    type="primary"
+                    @click="addFlow()"
+                  >创建流程</el-button>
+                </div>
               </div>
             </el-col>
           </el-row>
           <div class="table-wrap">
             <el-row style="padding: 15px 0">
               <el-col :span="12" style="color: #666">
-                <div class="grid-content bg-purple">流程算法列表</div>
+                <div class="grid-content bg-purple colord font20 fontb">
+                  流程算法列表
+                </div>
               </el-col>
-              <el-col :span="12" style="text-align: right">
+              <!-- <el-col :span="12" style="text-align: right">
                 <el-button
                   type="primary"
                   @click="addFlow()"
                 >创建流程</el-button>
-              </el-col>
+              </el-col> -->
             </el-row>
-            <el-table :data="tableDataList" style="width: 100%">
-              <el-table-column label="流程名称">
+            <el-table
+              v-loading="loading"
+              :data="tableDataList"
+              style="width: 100%"
+              center
+            >
+              <el-table-column label="流程名称" align="center">
                 <template slot-scope="scope">
                   <span>{{ scope.row.flowName }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="步骤数">
+              <el-table-column label="步骤数" align="center">
                 <template slot-scope="scope">
                   <span>{{ scope.row.stepSize }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="流程结束判定">
+              <el-table-column label="流程结束判定" align="center">
                 <template slot-scope="scope">
                   <span>{{ showFlowTime(scope.row.flowTime).date_h }}</span>
                   小时
@@ -52,26 +71,13 @@
                   分钟
                 </template>
               </el-table-column>
-              <el-table-column label="步骤">
+              <el-table-column label="步骤" align="center">
                 <template slot-scope="scope">
                   <span>{{ scope.row.stepNames }}</span>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" label="操作">
+              <el-table-column fixed="right" label="操作" align="center">
                 <template slot-scope="scope">
-                  <!-- <router-link
-                    :to="{
-                      name: 'SysFlowHistory',
-                      params: { groupId: 8778 }
-                    }"
-                    class="link-type"
-                  >
-                    <svg-icon
-                      icon-class="configurine"
-                      style="vertical-align: -2px; margin-right: 2px"
-                    />
-                    <span>配置LED</span>
-                  </router-link> -->
                   <el-button
                     v-for="(v, i) in handles"
                     :key="i"
@@ -90,7 +96,7 @@
             :total="total"
             :page.sync="queryParams.pageIndex"
             :limit.sync="queryParams.pageSize"
-            @pagination="onPagination"
+            @pagination="onPagination(queryParams)"
           />
         </el-card>
         <el-dialog
@@ -154,8 +160,9 @@
             >
               <el-select
                 v-model="curFormData.sysFlowNodes[index].acId"
-                placeholder="请选择摄像头及算法"
+                placeholder="请选择或者搜索摄像头及算法"
                 :disabled="curFormData.flowStatus !== ''"
+                filterable
                 @change="onNodesChange(index, $event)"
               >
                 <!-- <div
@@ -185,22 +192,24 @@
                 <p v-if="index == curFormData.sysFlowNodes.length - 1">
                   识别到此步骤，即触发流程结束
                 </p>
-                <p v-else>{{ `识别到步骤${index + 1},即触发流程开始` }}</p>
+                <p v-if="index == 0">
+                  {{ `识别到步骤${index + 1},即触发流程开始` }}
+                </p>
               </div>
               <div class="icon-wrap">
                 <i
-                  class="el-icon-circle-plus-outline"
+                  class="el-icon-circle-plus-outline fontb"
                   style="color: #654ef4"
                   @click="stepChange(index, 'add')"
                 />
                 <i
-                  class="el-icon-remove-outline"
+                  class="el-icon-remove-outline fontb"
                   style="color: #eb6161"
                   @click="stepChange(index, 'remove')"
                 />
               </div>
             </el-form-item>
-            <el-form-item label="流程结束判定:">
+            <el-form-item label="流程结束判定:" class="end-time-wrap">
               <div class="date-wrap">
                 <span>距离流程开始&nbsp;</span>
                 <el-input
@@ -243,35 +252,35 @@
         >
           <div slot="title" class="detil-title">
             <div class="slot-title">流程详情</div>
-            <p class="flow-name">
-              <span class="color-tit">流程名称:&nbsp;</span><span class="color9 color-subtit">{{
-                curFormData.flowName
-              }}</span>
+            <p class="flow-name color-subtit font16">
+              <span class="">流程名称:&nbsp;</span><span class="">{{ curFormData.flowName }}</span>
             </p>
-            <p class="flow-time">
-              <span class="color-tit">结束判定:&nbsp;</span><span
-                class="color9 color-subtit"
-              >距离流程开始&nbsp;<b class="colord font16">{{
+            <p class="flow-time color-subtit font16">
+              <span class="">结束判定:&nbsp;</span><span
+                class=""
+              >距离流程开始&nbsp;<b class="colord font18">{{
                 showFlowTime(curFormData.flowTime).date_h
-              }}</b>&nbsp;小时&nbsp;<b class="colord font16">{{
+              }}</b>&nbsp;小时&nbsp;<b class="colord font18">{{
                 showFlowTime(curFormData.flowTime).date_s
               }}</b>&nbsp;分
               </span>
             </p>
           </div>
           <div class="detil-lists h100 auto-overflow">
-            <h3 class="divider">流程步骤：</h3>
+            <p class="item-detil tlabel fontb">
+              <span class="item">流程步骤</span><span class="item">摄像头</span><span class="item">算法</span>
+            </p>
             <p
               v-for="(v, index) in curFormData.sysFlowNodes"
               :key="index"
               class="item-detil"
             >
-              <span class="">
+              <span class="item">
                 <span class="index">{{ index + 1 }}</span>
                 {{ v.nodeName }}
               </span>
-              <span class="color9"> {{ v.camName }}</span>
-              <span class="color9"> {{ v.aiName }}</span>
+              <span class="color9 item"> {{ v.camName }}</span>
+              <span class="color9 item"> {{ v.aiName }}</span>
             </p>
           </div>
         </el-dialog>
@@ -284,29 +293,31 @@
 import { sysAiFlow, sysAiFlowList, sysAiConfig } from "@/api/box/sys-ai";
 const defaultFnData = () => {
   return {
-    flowName: "",
-    stepSize: 2,
-    stepNames: "",
-    flowTime: 0,
-    flowStatus: "",
-    sysFlowNodes: [
-      {
-        acId: "", // 算法配置id
-        aiId: 0, // 算法id
-        boxId: 0, // 盒子id
-        camId: 0, // 摄像头id
-        nodeName: "", // 节点名称
-        sort: 1
-      },
-      {
-        acId: "",
-        aiId: 0,
-        boxId: 0,
-        camId: 0,
-        nodeName: "",
-        sort: 2
-      }
-    ]
+    data: {
+      flowName: "",
+      stepSize: 2,
+      stepNames: "",
+      flowTime: 0,
+      flowStatus: "",
+      sysFlowNodes: [
+        {
+          acId: "", // 算法配置id
+          aiId: 0, // 算法id
+          boxId: 0, // 盒子id
+          camId: 0, // 摄像头id
+          nodeName: "", // 节点名称
+          sort: 1
+        },
+        {
+          acId: "",
+          aiId: 0,
+          boxId: 0,
+          camId: 0,
+          nodeName: "",
+          sort: 2
+        }
+      ]
+    }
   };
 };
 const defaultStepData = (index) => {
@@ -338,6 +349,7 @@ export default {
   components: {},
   data() {
     return {
+      loading: true,
       total: 0,
       openDeiltDialog: false,
       handles,
@@ -360,6 +372,7 @@ export default {
       seachName: "",
       // 查询参数
       queryParams: {
+        createdAtOrder: "desc",
         pageIndex: 1,
         pageSize: 10
       },
@@ -385,24 +398,27 @@ export default {
       };
       if (this.curFormData.flowId) {
         obj.name = "修改流程";
-        if (this.curFormData.flowStatus !== "") {
-          obj.state = `${
-            this.curFormData.flowStatus === "1" ? "进行中" : "已结束"
-          },不可修改`;
-        }
+        // if (this.curFormData.flowStatus !== "") {
+        //   obj.state = `${
+        //     this.curFormData.flowStatus === "1" ? "进行中" : "已结束"
+        //   },不可修改`;
+        // }
       }
       return obj;
     }
   },
   watch: {},
   activated() {
-    this.querySysAiFlowList(this.queryParams, true);
+    this.querySysAiFlowList(this.queryParams);
     this.getSysAiConfig();
   },
   created() {},
   methods: {
     getSysAiConfig() {
-      sysAiConfig().then((res) => {
+      sysAiConfig({
+        pageIndex: 1,
+        pageSize: 200
+      }).then((res) => {
         const { data } = res;
         let t = [];
         if (data.list && Array.isArray(data.list)) {
@@ -446,11 +462,17 @@ export default {
       }
     },
     // 查询检索
-    seachFn() {
-      const queryParams = {
-        flowName: this.seachName
-      };
-      this.querySysAiFlowList(queryParams);
+    seachFn(t) {
+      if (t == "filter") {
+        const queryParams = {
+          flowName: this.seachName,
+          createdAtOrder: "desc"
+        };
+        this.querySysAiFlowList(queryParams);
+      } else {
+        this.seachName = "";
+        this.querySysAiFlowList(this.queryParams);
+      }
     },
     // 操作
     handleClick(type, row) {
@@ -479,36 +501,39 @@ export default {
           this.addFlow(row);
           break;
         case "del":
-          if (row.flowStatus === "0") {
-            this.$confirm("删除后将不可恢复", "删除流程算法?", {
-              center: true
-            }).then((res) => {
-              sysAiFlow({
-                method: "delete",
-                data: {
-                  flowId: row.flowId
-                }
-              }).then((res) => {
-                this.$message.success("删除成功");
-                this.querySysAiFlowList(this.queryParams, true);
-              });
-            });
+          if (row.flowStatus == 1) {
+            this.$alert(
+              "该流程在进行中，不可删除!</br>流程结束方可删除",
+              "提示",
+              {
+                center: true,
+                dangerouslyUseHTMLString: true
+              }
+            );
             return;
           }
-          this.$alert(
-            "该流程在进行中，不可删除!</br>流程结束方可删除",
-            "提示",
-            {
-              center: true,
-              dangerouslyUseHTMLString: true
-            }
-          );
+          this.$confirm("删除后将不可恢复", "删除流程算法?", {
+            center: true
+          }).then((res) => {
+            sysAiFlow({
+              method: "delete",
+              data: {
+                flowId: row.flowId
+              }
+            }).then((res) => {
+              this.$message.success("删除成功");
+              this.querySysAiFlowList(this.queryParams);
+            });
+          });
           break;
       }
     },
     // 创建流程
-    addFlow(v = null) {
-      this.curFormData = v ? JSON.parse(JSON.stringify(v)) : defaultFnData();
+    async addFlow(v = null) {
+      const { data } = v
+        ? await sysAiFlow({ flowid: v.flowId })
+        : defaultFnData();
+      this.curFormData = data;
       if (this.curFormData.flowTime) {
         this.date_h = this.showFlowTime(this.curFormData.flowTime).date_h;
         this.date_s = this.showFlowTime(this.curFormData.flowTime).date_s;
@@ -557,7 +582,7 @@ export default {
       const subFn = () => {
         sysAiFlow(opt).then((res) => {
           this.$message.success("成功");
-          this.querySysAiFlowList(this.queryParams, true);
+          this.querySysAiFlowList(this.queryParams);
           this.openDialog = false;
         });
       };
@@ -623,6 +648,14 @@ export default {
         if (this.curFormData.sysFlowNodes.length == 2) {
           return this.$message.info("最少2个步骤");
         }
+        if (this.curFormData.sysFlowNodes[index].acId) {
+          this.$confirm("确定删除吗?", "提示", {
+            center: true
+          }).then((res) => {
+            this.curFormData.sysFlowNodes.splice(index, 1);
+          });
+          return;
+        }
         this.curFormData.sysFlowNodes.splice(index, 1);
       }
     },
@@ -649,25 +682,25 @@ export default {
       }
       return "";
     },
-    onPagination(v) {
-      this.querySysAiFlowList(this.queryParams);
+    onPagination(queryParams) {
+      this.querySysAiFlowList(queryParams);
     },
     /** 查询参数列表 */
-    querySysAiFlowList(queryData = "", init = false) {
+    querySysAiFlowList(queryData = "") {
+      this.loading = true;
       let temp = [];
       queryData = queryData || this.queryParams;
       sysAiFlowList(queryData).then((res) => {
         if (res.code == 200) {
           const { data } = res;
-          // if (init) {
           this.total = data.count;
-          // }
           if (data && data.list && Array.isArray(data.list)) {
             temp = data.list;
             this.initDataProps(temp);
           }
           this.tableDataList = temp;
         }
+        this.loading = false;
       });
     },
     // 初始化自定义数据
@@ -713,9 +746,6 @@ export default {
 <style lang="scss" scoped>
 .flow-ai {
   .title-wrap {
-    padding: 20px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
   }
 
   .input-wrap {
@@ -740,7 +770,6 @@ export default {
   .formdata-wrap {
     .steps {
       position: relative;
-
       .icon-wrap {
         position: absolute;
         right: 0;
@@ -750,15 +779,14 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-evenly;
-        opacity: 0;
+        opacity: 1;
         cursor: pointer;
         transition: all 0.3s;
       }
-
-      &.can-show-handle:hover {
-        .icon-wrap {
-          opacity: 1;
-        }
+    }
+    &.disabled {
+      .icon-wrap {
+        opacity: 0;
       }
     }
   }
@@ -781,8 +809,6 @@ export default {
     }
 
     p {
-      color: #666;
-      font-size: 16px;
       margin: 5px 0;
     }
     .flow-time {
@@ -799,19 +825,25 @@ export default {
     padding-bottom: 15px;
     border-bottom: 1px solid #f0f0f0;
     padding-right: 60px;
-
+    .item {
+      width: 30%;
+    }
     .index {
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 1px solid #409eff;
+      border: 1px solid #7558f4;
       border-radius: 50%;
       text-align: center;
       line-height: 20px;
       font-size: 12px;
-      background: #409eff;
+      background: #7558f4;
       color: #fff;
       margin-right: 6px;
+    }
+    &.tlabel {
+      border-bottom: 1px dashed #ccc;
+      padding-bottom: 10px;
     }
   }
 }
@@ -842,5 +874,18 @@ export default {
 
 .updata-dialog.disabled .el-dialog__title {
   color: #999;
+}
+.end-time-wrap label {
+  position: relative;
+  padding-left: 10px;
+}
+.end-time-wrap label::before {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+  display: block;
+  content: "*";
+  color: #f00;
 }
 </style>

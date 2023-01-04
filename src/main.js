@@ -38,6 +38,7 @@ import "./utils/error-log"; // error log
 // import '@/assets/static/plugins/jquery/jquery.min.js'
 // import '@/assets/static/plugins/bootstrap/js/bootstrap.bundle.min.js'
 // import '@/assets/static/plugins/sweetalert2/sweetalert2.min.js'
+
 import vuescroll from "vuescroll";
 import Viser from "viser-vue";
 Vue.use(Viser);
@@ -167,9 +168,10 @@ import VueCoreVideoPlayer from "vue-core-video-player";
 Vue.use(VueCoreVideoPlayer);
 import "viewerjs/dist/viewer.css";
 import VueViewer from "v-viewer";
+
 Vue.use(VueViewer);
+// 需要配置的属性注意属性并没有引号   https://blog.csdn.net/qq_41057885/article/details/118406684  在线演示链接：http://fengyuanchen.github.io/viewerjs/examples/custom-toolbar.html
 VueViewer.setDefaults({
-  // 需要配置的属性 注意属性并没有引号   https://blog.csdn.net/qq_41057885/article/details/118406684  在线演示链接：http://fengyuanchen.github.io/viewerjs/examples/custom-toolbar.html
   navbar: false,
   zIndex: 100000
 });
@@ -177,6 +179,9 @@ import "./assets/iconfont/iconfont.css";
 
 import dataV from "@jiaminghi/data-view";
 Vue.use(dataV);
+// import Vue2OrgTree from "vue2-org-tree";
+// import "@/styles/org-tree.scss";
+// Vue.use(Vue2OrgTree);
 
 // 引入vue-awesome
 import * as echarts from "echarts";

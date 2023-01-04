@@ -217,7 +217,8 @@
             <el-table-column
               label="操作"
               align="center"
-              class-name="small-padding fixed-width"
+              class-name="small-padding fixed-width my-dropdown"
+              fixed="right"
             >
               <template slot-scope="scope">
                 <div>
@@ -232,60 +233,122 @@
                     基础配置
                   </el-button>
                 </div>
-                <div v-permisaction="['devops:sysAiConfig:interest']">
-                  <el-button
-                    type="text"
+                <div class="mg-b-10">
+                  <el-dropdown
                     size="mini"
-                    @click="handleInterestedLine(scope.row)"
+                    type="primary"
+                    plain
+                    class="dropdown-menu"
                   >
-                    <svg-icon icon-class="Interest" />
-                    设置感兴趣区
-                  </el-button>
+                    <el-button type="primary" size="small" plain>
+                      设置区域<i class="el-icon-arrow-down el-icon--right" />
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item class="dropdown-item">
+                        <div v-permisaction="['devops:sysAiConfig:interest']">
+                          <el-button
+                            type="text"
+                            size="mini"
+                            @click="handleCommon(scope.row, 'interestLine')"
+                          >
+                            <svg-icon icon-class="Interest" />
+                            设置感兴趣区
+                          </el-button>
+                        </div>
+                      </el-dropdown-item>
+                      <el-dropdown-item class="dropdown-item">
+                        <div>
+                          <el-button
+                            type="text"
+                            size="mini"
+                            @click="handleCommon(scope.row, 'detectionLine')"
+                          >
+                            <svg-icon icon-class="modulation" />
+                            设置识别区
+                          </el-button>
+                        </div>
+                      </el-dropdown-item>
+                      <el-dropdown-item class="dropdown-item">
+                        <div>
+                          <el-button
+                            type="text"
+                            size="mini"
+                            @click="handleCommon(scope.row, 'shieldLine')"
+                          >
+                            <svg-icon icon-class="forbid" />
+                            设置屏蔽区
+                          </el-button>
+                        </div>
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        v-if="scope.row.ai.aiName.includes('围界')"
+                        class="dropdown-item"
+                      >
+                        <div>
+                          <el-button
+                            type="text"
+                            size="mini"
+                            @click="handleCommon(scope.row, 'borderLine')"
+                          >
+                            <svg-icon icon-class="hunting" />
+                            设置围界区
+                          </el-button>
+                        </div>
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        v-if="
+                          scope.row.ai.aiName.includes('人员计数') ||
+                            scope.row.ai.aiName.includes('静电球')
+                        "
+                        class="dropdown-item"
+                      >
+                        <div>
+                          <el-button
+                            type="text"
+                            icon="el-icon-picture"
+                            size="mini"
+                            @click="handleCommon(scope.row, 'hideField')"
+                          >设置方向
+                          </el-button>
+                        </div>
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
                 </div>
-                <div>
-                  <el-button
-                    type="text"
-                    size="mini"
-                    @click="handleDrawDetectionLine(scope.row)"
-                  >
-                    <svg-icon icon-class="modulation" />
-                    设置识别区
-                  </el-button>
+                <div class="mg-b-10">
+                  <el-dropdown type="primary" plain>
+                    <el-button type="primary" size="small" plain>
+                      PLC<i class="el-icon-arrow-down el-icon--right" />
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item class="dropdown-item">
+                        <div>
+                          <el-button
+                            size="mini"
+                            type="text"
+                            @click="plcConfig(scope.row)"
+                          >
+                            <svg-icon icon-class="configuration" />
+                            配置
+                          </el-button>
+                        </div>
+                      </el-dropdown-item>
+                      <el-dropdown-item class="dropdown-item">
+                        <div>
+                          <el-button
+                            size="small"
+                            type="text"
+                            @click="dlectPLC(scope.row)"
+                          >
+                            <svg-icon icon-class="delete" />
+                            移除
+                          </el-button>
+                        </div>
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
                 </div>
-                <div>
-                  <el-button
-                    type="text"
-                    size="mini"
-                    @click="handleDrawShieldLine(scope.row)"
-                  >
-                    <svg-icon icon-class="forbid" />
-                    设置屏蔽区
-                  </el-button>
-                </div>
-                <div>
-                  <el-button
-                    v-if="scope.row.ai.aiName.includes('围界')"
-                    type="text"
-                    size="mini"
-                    @click="handleDrawBorderLine(scope.row)"
-                  >
-                    <svg-icon icon-class="hunting" />
-                    设置围界区
-                  </el-button>
-                </div>
-                <div>
-                  <el-button
-                    v-if="
-                      scope.row.ai.aiName.includes('人员计数') ||
-                        scope.row.ai.aiName.includes('静电球')
-                    "
-                    type="text"
-                    icon="el-icon-picture"
-                    size="mini"
-                    @click="handleDrawPeopleCountLine(scope.row)"
-                  >设置方向
-                  </el-button>
-                </div>
+
                 <div>
                   <el-button
                     v-permisaction="['devops:sysAiConfig:checkUp']"
@@ -535,12 +598,18 @@
 
                 <el-row>
                   <el-col :span="8">
-                    <el-form-item label="事件持续" prop="duration">
+                    <el-form-item
+                      label="事件持续"
+                      prop="duration"
+                      class="duration"
+                    >
                       <el-input
                         v-model="form.duration"
                         :min="1"
                         :max="10000"
                         size="mini"
+                        type="number"
+                        @input="durationInput"
                       />
                     </el-form-item>
                   </el-col>
@@ -552,7 +621,7 @@
                         line-height: 45px;
                       "
                     >
-                      秒 触发告警</span>
+                      秒触发告警</span>
                   </el-col>
                 </el-row>
                 <el-row>
@@ -750,64 +819,28 @@
               </div>
             </el-dialog>
           </div>
-          <!-- 识别区域域绘制对话框 -->
-          <drawDetection-config
-            :show="detectionDialog.show"
-            :ac-id="detectionDialog.acId"
-            :c-id="detectionDialog.cId"
-            :a-id="detectionDialog.aId"
-            :n-id="detectionDialog.nId"
-            :config-data="detectionDialog.configData"
-            @showChange="createDetectionDialogToggle"
+          <!-- 图形绘制 -->
+          <canvasDraw
+            :show="curDrawData.show"
+            :ac-id="curDrawData.acId"
+            :c-id="curDrawData.cId"
+            :a-id="curDrawData.aId"
+            :n-id="curDrawData.nId"
+            :config-data="curDrawData.configData"
+            :draw-type="curEditType"
+            :draw-max-count="curDrawData.drawMaxCount"
+            :cer-max-count="curDrawData.cerMaxCount"
             @ok="getList"
             @updateItem="commonUpdateItem"
           />
-          <!-- 感兴趣区域域绘制对话框 -->
-          <drawInterested-config
-            :show="interestedDialog.show"
-            :ac-id="interestedDialog.acId"
-            :c-id="interestedDialog.cId"
-            :a-id="interestedDialog.aId"
-            :n-id="interestedDialog.nId"
-            :config-data="interestedDialog.configData"
-            @showChange="createInterestedDialogToggle"
-            @ok="getList"
-            @updateItem="commonUpdateItem"
-          />
-          <!-- 屏蔽区域域绘制对话框 -->
-          <drawShield-config
-            :show="shieldDialog.show"
-            :ac-id="shieldDialog.acId"
-            :c-id="shieldDialog.cId"
-            :a-id="shieldDialog.aId"
-            :n-id="shieldDialog.nId"
-            :config-data="shieldDialog.configData"
-            @showChange="createShieldDialogToggle"
-            @ok="getList"
-            @updateItem="commonUpdateItem"
-          />
-          <!-- 围界区域域绘制对话框 -->
-          <drawBorder-config
-            :show="borderDialog.show"
-            :ac-id="borderDialog.acId"
-            :c-id="borderDialog.cId"
-            :a-id="borderDialog.aId"
-            :n-id="borderDialog.nId"
-            :config-data="borderDialog.configData"
-            @showChange="createBorderDialogToggle"
-            @ok="getList"
-            @updateItem="commonUpdateItem"
-          />
-          <!-- 人员计数区域域绘制对话框 -->
-          <drawPeople-count
-            :show="peopleCountDialog.show"
-            :ac-id="peopleCountDialog.acId"
-            :c-id="peopleCountDialog.cId"
-            :a-id="peopleCountDialog.aId"
-            :n-id="peopleCountDialog.nId"
-            :config-data="peopleCountDialog.configData"
-            @showChange="createPeopleCountDialogToggle"
-            @ok="getList"
+          <plcConfig
+            :show="plcConfigVisible"
+            :cur-item-data="curItemData"
+            :config-list="curPlcConfigFormData"
+            :plc-lists="plcLists"
+            :plc-cmd-lists="plcCmdLists"
+            :plc-config-type="plcConfigType"
+            @hidePlcConfig="onHidePlcConfig"
           />
         </el-card>
       </div>
@@ -816,6 +849,222 @@
 </template>
 
 <script>
+// const dbgdata = {
+//   requestId: "f5ba9eca-1ce9-4727-b4a3-5f531a61c85b",
+//   code: 200,
+//   msg: "查询成功",
+//   data: {
+//     count: 3,
+//     pageIndex: 1,
+//     pageSize: 10,
+//     list: [
+//       {
+//         id: 13118292563285,
+//         nId: 13118292561237,
+//         bId: 13118132611413,
+//         cId: 13,
+//         aId: 359563954704901,
+//         camStatus: "1",
+//         aiStatus: "1",
+//         detectionLine: "",
+//         shieldLine:
+//           "3,241,658,241,658,539,3,539|431,16,431,16,431,16,431,16|430,19,5,529,655,534,632,47,430,17",
+//         borderLine: "8,15,943,15,943,511,8,511",
+//         interestLine: "100",
+//         aiConf: 0,
+//         detectSizeX: 1,
+//         detectSizeY: 50,
+//         hideField: "",
+//         duration: 0,
+//         threshold: 2,
+//         ambiguity: 0,
+//         light: "2",
+//         criticalFrame: 4,
+//         totalFrame: 5,
+//         ai: {
+//           aiId: 359563954704901,
+//           parentId: 359563868914181,
+//           aiPath: "/0/359561051193861/359563868914181/359563954704901/",
+//           aiName: "围界识别",
+//           aiNickName: "围界识别",
+//           sort: 1,
+//           aiPackage: "N",
+//           aiLast: "Y",
+//           camLimit: 1,
+//           npuLimit: 1,
+//           alarmName: "围界告警",
+//           alarmInterval: 10,
+//           aiWeight: 25,
+//           icon: "aiIcon",
+//           aiColor: "rgba(255, 0, 0, 1)",
+//           aiEnable: "1",
+//           aiDescribe: "02",
+//           sysBoxes: null,
+//           createdAt: "2022-12-02T10:49:30.631+08:00",
+//           updatedAt: "2022-12-02T10:49:30.643+08:00",
+//           createBy: 0,
+//           updateBy: 0,
+//           dataScope: "",
+//           params: "",
+//           children: null,
+//           sysCameraIds: [],
+//           camIdNames: [],
+//           sysCameras: null
+//         },
+//         sysAiTimes: [
+//           {
+//             id: 13118292565334,
+//             acId: 13118292563285,
+//             startAt: "2006-01-02T00:00:00+08:00",
+//             endAt: "2006-01-02T23:59:59+08:00",
+//             aiTimeArray: [
+//               "2006-01-02T00:00:00+08:00",
+//               "2006-01-02T23:59:59+08:00"
+//             ],
+//             createdAt: "2022-12-13T23:28:04.876+08:00",
+//             updatedAt: "2022-12-13T23:28:04.876+08:00",
+//             createBy: 0,
+//             updateBy: 0
+//           }
+//         ],
+//         aiTime: [{ startAt: "00:00", endAt: "23:59" }]
+//       },
+//       {
+//         id: 13120540092605,
+//         nId: 13120540091069,
+//         bId: 13120469875901,
+//         cId: 13,
+//         aId: 359563060077061,
+//         camStatus: "1",
+//         aiStatus: "1",
+//         detectionLine: "",
+//         shieldLine: "5,19,922,19,922,518,5,518",
+//         borderLine: "",
+//         interestLine: "20",
+//         aiConf: 0,
+//         detectSizeX: 1,
+//         detectSizeY: 20,
+//         hideField: "",
+//         duration: 0,
+//         threshold: 2,
+//         ambiguity: 0,
+//         light: "2",
+//         criticalFrame: 3,
+//         totalFrame: 5,
+//         ai: {
+//           aiId: 359563060077061,
+//           parentId: 359562685473285,
+//           aiPath: "/0/359561051193861/359562685473285/359563060077061/",
+//           aiName: "防毒口罩识别",
+//           aiNickName: "防毒口罩识别",
+//           sort: 1,
+//           aiPackage: "N",
+//           aiLast: "Y",
+//           camLimit: 1,
+//           npuLimit: 1,
+//           alarmName: "未戴防毒口罩告警",
+//           alarmInterval: 10,
+//           aiWeight: 25,
+//           icon: "aiIcon",
+//           aiColor: "rgba(255, 0, 0, 1)",
+//           aiEnable: "1",
+//           aiDescribe: "25",
+//           sysBoxes: null,
+//           createdAt: "2022-12-02T10:45:52.216+08:00",
+//           updatedAt: "2022-12-02T10:45:52.225+08:00",
+//           createBy: 0,
+//           updateBy: 0,
+//           dataScope: "",
+//           params: "",
+//           children: null,
+//           sysCameraIds: [],
+//           camIdNames: [],
+//           sysCameras: null
+//         },
+//         sysAiTimes: [],
+//         aiTime: []
+//       },
+//       {
+//         id: 13120621951317,
+//         nId: 13120621949269,
+//         bId: 13120473511253,
+//         cId: 13,
+//         aId: 359564556722693,
+//         camStatus: "0",
+//         aiStatus: "0",
+//         detectionLine: "",
+//         shieldLine: "3,8,950,8,950,528,3,528",
+//         borderLine: "",
+//         interestLine: "20",
+//         aiConf: 0,
+//         detectSizeX: 1,
+//         detectSizeY: 20,
+//         hideField: "",
+//         duration: 0,
+//         threshold: 2,
+//         ambiguity: 0,
+//         light: "2",
+//         criticalFrame: 4,
+//         totalFrame: 5,
+//         ai: {
+//           aiId: 359564556722693,
+//           parentId: 359564369064453,
+//           aiPath: "/0/359561051193861/359564369064453/359564556722693/",
+//           aiName: "安全帽识别",
+//           aiNickName: "安全帽识别",
+//           sort: 1,
+//           aiPackage: "N",
+//           aiLast: "Y",
+//           camLimit: 1,
+//           npuLimit: 1,
+//           alarmName: "未戴安全帽告警",
+//           alarmInterval: 10,
+//           aiWeight: 25,
+//           icon: "aiIcon",
+//           aiColor: "rgba(255, 0, 0, 1)",
+//           aiEnable: "1",
+//           aiDescribe: "01",
+//           sysBoxes: null,
+//           createdAt: "2022-12-02T10:51:57.607+08:00",
+//           updatedAt: "2022-12-06T12:10:21.027+08:00",
+//           createBy: 0,
+//           updateBy: 0,
+//           dataScope: "",
+//           params: "",
+//           children: null,
+//           sysCameraIds: [],
+//           camIdNames: [],
+//           sysCameras: null
+//         },
+//         sysAiTimes: [
+//           {
+//             id: 13122429343311,
+//             acId: 13120621951317,
+//             startAt: "2006-01-02T00:00:00+08:00",
+//             endAt: "2006-01-02T23:59:59+08:00",
+//             aiTimeArray: [
+//               "2006-01-02T00:00:00+08:00",
+//               "2006-01-02T23:59:59+08:00"
+//             ],
+//             createdAt: "2022-12-14T15:51:18.35+08:00",
+//             updatedAt: "2022-12-14T15:51:18.35+08:00",
+//             createBy: 0,
+//             updateBy: 0
+//           }
+//         ],
+//         aiTime: [{ startAt: "00:00", endAt: "23:59" }]
+//       }
+//     ]
+//   }
+// };
+const plcConfigData = () => {
+  return [
+    {
+      plcId: "",
+      dictCode: ""
+    }
+  ];
+};
 import {
   addSysAiConfig,
   authentication,
@@ -833,22 +1082,32 @@ import {
   getSysCameraRelateAi,
   updateRelateAi
 } from "@/api/box/sys-camera";
-import drawDetectionConfig from "./components/drawDetectionConfig";
-import drawBorderConfig from "./components/drawBorderConfig";
-import drawShieldConfig from "./components/drawShieldConfig";
-import drawPeopleCount from "./components/drawPeopleCount";
+// import drawDetectionConfig from "./components/drawDetectionConfig";
+// import drawBorderConfig from "./components/drawBorderConfig";
+// import drawShieldConfig from "./components/drawShieldConfig";
+// import drawPeopleCount from "./components/drawPeopleCount";
+// import drawInterestedConfig from "./components/drawInterestedConfig";
+import canvasDraw from "./canvasDraw";
+import plcConfig from "@/views/box/plc-config/plcConfig";
 import { getAllBoxRelateAi } from "@/api/box/sys-box";
 import { getAllAiNameDict, getSysAi } from "@/api/box/sys-ai";
-import drawInterestedConfig from "./components/drawInterestedConfig";
-
+import {
+  plcDictData,
+  sysPlcRequest,
+  sysPlcConfigRequest
+} from "@/api/box/sys-plc";
+const drawMaxCount = 20; // 可绘制的最大图形数量
+const cerMaxCount = 50; // 多边形允许最多节点数量
 export default {
   name: "SysAiConfigManage",
   components: {
-    drawDetectionConfig,
-    drawShieldConfig,
-    drawBorderConfig,
-    drawPeopleCount,
-    drawInterestedConfig
+    // drawDetectionConfig,
+    // drawShieldConfig,
+    // drawBorderConfig,
+    // drawPeopleCount,
+    // drawInterestedConfig,
+    canvasDraw,
+    plcConfig
   },
   data() {
     return {
@@ -903,6 +1162,7 @@ export default {
       cameraForm: {},
       // 表单参数
       aiForm: {},
+      plcConfigRules: {},
       // 表单校验
       rules: {
         threshold: [
@@ -1020,7 +1280,24 @@ export default {
           label: 100
         }
       ],
-      value4: ""
+      value4: "",
+      curEditType: "",
+      curDrawData: {
+        show: false,
+        acId: 0,
+        cId: 0,
+        aId: 0,
+        nId: 0,
+        configData: undefined,
+        drawMaxCount: drawMaxCount,
+        cerMaxCount: cerMaxCount
+      },
+      curItemData: {},
+      plcConfigVisible: false,
+      curPlcConfigFormData: [],
+      plcLists: [],
+      plcCmdLists: [],
+      plcConfigType: "add"
     };
   },
   // computed: {
@@ -1042,7 +1319,6 @@ export default {
     this.getAiTreeSelect();
     this.getAllAiNameDict();
     getDicts("sys_ai_light").then((response) => {
-      // console.log(response)
       this.lightOptions = response.data;
     });
     // 权限控制
@@ -1052,6 +1328,7 @@ export default {
       // 修改对应角色名，控制权限
       this.showCol = false;
     }
+    this.initLoadPlcdata();
   },
   methods: {
     /** 查询参数列表 */
@@ -1059,6 +1336,7 @@ export default {
       this.loading = true;
       listSysAiConfig(this.addDateRange(this.queryParams, this.dateRange)).then(
         (response) => {
+          // response = dbgdata;
           this.sysAiConfigList = response.data.list;
           console.log("查询参数列表", this.sysAiConfigList);
           this.total = response.data.count;
@@ -1094,58 +1372,6 @@ export default {
         aiTime: undefined
       };
       this.resetForm("form");
-    },
-    // 表单重置
-    resetInterestedDialog() {
-      this.interestedDialog = {
-        show: false,
-        acId: 0,
-        cId: 0,
-        aId: 0,
-        nId: 0,
-        configData: undefined
-      };
-    },
-    resetDetectionDialog() {
-      this.detectionDialog = {
-        show: false,
-        acId: 0,
-        cId: 0,
-        aId: 0,
-        nId: 0,
-        configData: undefined
-      };
-    },
-    resetShieldDialog() {
-      this.shieldDialog = {
-        show: false,
-        acId: 0,
-        cId: 0,
-        aId: 0,
-        nId: 0,
-        configData: undefined
-      };
-    },
-    // 表单重置
-    resetBorderDialog() {
-      this.borderDialog = {
-        show: false,
-        acId: 0,
-        cId: 0,
-        aId: 0,
-        nId: 0,
-        configData: undefined
-      };
-    },
-    resetPeopleCountDialog() {
-      this.peopleCountDialog = {
-        show: false,
-        acId: 0,
-        cId: 0,
-        aId: 0,
-        nId: 0,
-        configData: undefined
-      };
     },
 
     relateAiReset() {
@@ -1227,10 +1453,40 @@ export default {
         }
       });
     },
+    // PLC 配置
+    async plcConfig(row) {
+      this.curItemData = row;
+      let conFigData = plcConfigData();
+      this.plcConfigType = "add";
+      const { data } = await sysPlcConfigRequest({ query: { acId: row.id }});
+      if (data && data.list && data.list.length) {
+        conFigData = data.list;
+        this.plcConfigType = "edit";
+      }
+      this.curPlcConfigFormData = conFigData;
+      this.plcConfigVisible = true;
+    },
+    // 移除PLC
+    dlectPLC(row) {
+      this.$confirm("移除后相关配置将不生效", "移除此PLC?", {
+        center: true,
+        confirmButtonText: "确认移除"
+      }).then((res) => {
+        sysPlcConfigRequest({
+          method: "delete",
+          data: {
+            acId: row.id
+          }
+        }).then((res) => {
+          this.$message.success("移除成功");
+        });
+      });
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       // 检查是否可以删除
-      removeAiFlow({ acId: row.id }).then((res) => {
+      const queryObj = { acId: row.id };
+      removeAiFlow(queryObj).then((res) => {
         const { data } = res;
         if (data > 0) {
           this.$alert(
@@ -1297,87 +1553,44 @@ export default {
         }
       }
     },
-    createInterestedDialogToggle(value) {
-      this.interestedDialog.show = value;
-    },
-    createDetectionDialogToggle(value) {
-      this.detectionDialog.show = value;
-    },
-    createShieldDialogToggle(value) {
-      this.shieldDialog.show = value;
-    },
-    createBorderDialogToggle(value) {
-      this.borderDialog.show = value;
-    },
-    createPeopleCountDialogToggle(value) {
-      this.peopleCountDialog.show = value;
-    },
-    /** 感兴趣区修改按钮操作 */
-    handleInterestedLine(row) {
-      this.resetInterestedDialog();
-      this.interestedDialog.acId = row.id;
-      this.interestedDialog.aId = row.aId;
-      getProductLine(row.id).then((response) => {
-        this.interestedDialog.configData =
-          response.data.interestLine !== "" ? response.data.interestLine : "";
-        this.interestedDialog.cId = response.data.cId;
-        this.interestedDialog.nId = response.data.nId;
-        this.interestedDialog.show = true;
+    // interestLine 感兴趣区
+    // detectionLine 识别区
+    // shieldLine 屏蔽区
+    // borderLine 围界区
+    // hideField 人员计数方向
+    //* ****** */
+    // 图形绘制
+    handleCommon(row, type) {
+      this.curDrawData = {
+        show: false,
+        acId: 0,
+        cId: 0,
+        aId: 0,
+        nId: 0,
+        configData: undefined,
+        drawMaxCount: drawMaxCount,
+        cerMaxCount: cerMaxCount
+      };
+      this.curEditType = type;
+      let detailApi = getProductLine;
+      switch (type) {
+        case "interestLine":
+          this.curDrawData.drawMaxCount = 1;
+          break;
+        case "hideField":
+          detailApi = getExtendLine;
+          break;
+      }
+      this.curDrawData.acId = row.id;
+      this.curDrawData.aId = row.aId;
+      detailApi(row.id).then((response) => {
+        this.curDrawData.configData =
+          response.data[type] !== "" ? response.data[type] : "";
+        this.curDrawData.cId = response.data.cId;
+        this.curDrawData.nId = response.data.nId;
+        this.curDrawData.show = true;
       });
     },
-    /** 识别区域修改按钮操作 */
-    handleDrawDetectionLine(row) {
-      this.resetDetectionDialog();
-      this.detectionDialog.acId = row.id;
-      this.detectionDialog.aId = row.aId;
-      getProductLine(row.id).then((response) => {
-        this.detectionDialog.configData =
-          response.data.detectionLine !== "" ? response.data.detectionLine : "";
-        this.detectionDialog.cId = response.data.cId;
-        this.detectionDialog.nId = response.data.nId;
-        this.detectionDialog.show = true;
-      });
-    },
-    /** 屏蔽区域修改按钮操作 */
-    handleDrawShieldLine(row) {
-      this.resetShieldDialog();
-      this.shieldDialog.acId = row.id;
-      this.shieldDialog.aId = row.aId;
-      getProductLine(row.id).then((response) => {
-        this.shieldDialog.configData =
-          response.data.shieldLine !== "" ? response.data.shieldLine : "";
-        this.shieldDialog.cId = response.data.cId;
-        this.shieldDialog.nId = response.data.nId;
-        this.shieldDialog.show = true;
-      });
-    },
-    /** 围界区域修改按钮操作 */
-    handleDrawBorderLine(row) {
-      this.resetBorderDialog();
-      this.borderDialog.acId = row.id;
-      this.borderDialog.aId = row.aId;
-      getProductLine(row.id).then((response) => {
-        this.borderDialog.configData =
-          response.data.borderLine !== "" ? response.data.borderLine : "";
-        this.borderDialog.cId = response.data.cId;
-        this.borderDialog.nId = response.data.nId;
-        this.borderDialog.show = true;
-      });
-    },
-    /** 人员计数区域修改按钮操作 */
-    handleDrawPeopleCountLine(row) {
-      this.resetPeopleCountDialog();
-      this.peopleCountDialog.acId = row.id;
-      this.peopleCountDialog.aId = row.aId;
-      getExtendLine(row.id).then((response) => {
-        this.peopleCountDialog.configData =
-          response.data.hideField !== "" ? response.data.hideField : "";
-        this.peopleCountDialog.cId = response.data.cId;
-        this.peopleCountDialog.nId = response.data.nId;
-        this.peopleCountDialog.show = true;
-      });
-    },
-
     /** 关联按钮操作 查询 */
     handleRelateAi() {
       // this.relateAiReset()
@@ -1502,6 +1715,191 @@ export default {
       getAllAiNameDict().then((response) => {
         this.sysAiNameOptions = response.data;
       });
+    },
+    durationInput() {
+      if (this.form.duration) {
+        if (this.form.duration.length > 1) {
+          if (this.form.duration.charAt(0) == "0") {
+            this.form.duration = 1;
+          }
+        }
+      }
+      // if (this.form.duration == 0) {
+      //   this.form.duration = 1;
+      // }
+      if (this.form.duration > 10000) {
+        this.form.duration = 10000;
+      }
+    },
+    onHidePlcConfig(value) {
+      this.plcConfigVisible = value;
+    },
+    // PLC业务
+    initLoadPlcdata() {
+      this.querySysPlcList();
+      this.initGetCmdOption();
+    },
+    // 获取plc输入方式下拉
+    initGetCmdOption() {
+      let temp = [];
+      plcDictData({ dictType: "sys_plc_config_ins" }).then((res) => {
+        const { data } = res;
+        if (data && Array.isArray(data) && data.length) {
+          temp = data;
+        }
+        this.plcCmdLists = temp;
+      });
+    },
+    /** 查询plc列表 */
+    querySysPlcList(queryData = "") {
+      let temp = [];
+      sysPlcRequest().then((res) => {
+        if (res.code == 200) {
+          const { data } = res;
+          if (data && data.list && Array.isArray(data.list)) {
+            temp = data.list;
+          }
+          this.plcLists = temp;
+        }
+      });
+    },
+
+    // #######################################################################
+    //
+    //   ************ 以下方法未使用，后期再删除。(绘制图形已整合到一起)，
+    //
+    // #######################################################################
+    createInterestedDialogToggle(value) {
+      this.interestedDialog.show = value;
+    },
+    createDetectionDialogToggle(value) {
+      this.detectionDialog.show = value;
+    },
+    createShieldDialogToggle(value) {
+      this.shieldDialog.show = value;
+    },
+    createBorderDialogToggle(value) {
+      this.borderDialog.show = value;
+    },
+    createPeopleCountDialogToggle(value) {
+      this.peopleCountDialog.show = value;
+    },
+    /** 感兴趣区修改按钮操作 */
+    handleInterestedLine(row) {
+      this.resetInterestedDialog();
+      this.interestedDialog.acId = row.id;
+      this.interestedDialog.aId = row.aId;
+      getProductLine(row.id).then((response) => {
+        this.interestedDialog.configData =
+          response.data.interestLine !== "" ? response.data.interestLine : "";
+        this.interestedDialog.cId = response.data.cId;
+        this.interestedDialog.nId = response.data.nId;
+        this.interestedDialog.show = true;
+      });
+    },
+    /** 识别区域修改按钮操作 */
+    handleDrawDetectionLine(row) {
+      this.resetDetectionDialog();
+      this.detectionDialog.acId = row.id;
+      this.detectionDialog.aId = row.aId;
+      getProductLine(row.id).then((response) => {
+        this.detectionDialog.configData =
+          response.data.detectionLine !== "" ? response.data.detectionLine : "";
+        this.detectionDialog.cId = response.data.cId;
+        this.detectionDialog.nId = response.data.nId;
+        this.detectionDialog.show = true;
+      });
+    },
+    /** 屏蔽区域修改按钮操作 */
+    handleDrawShieldLine(row) {
+      this.resetShieldDialog();
+      this.shieldDialog.acId = row.id;
+      this.shieldDialog.aId = row.aId;
+      getProductLine(row.id).then((response) => {
+        this.shieldDialog.configData =
+          response.data.shieldLine !== "" ? response.data.shieldLine : "";
+        this.shieldDialog.cId = response.data.cId;
+        this.shieldDialog.nId = response.data.nId;
+        this.shieldDialog.show = true;
+      });
+    },
+    /** 围界区域修改按钮操作 */
+    handleDrawBorderLine(row) {
+      this.resetBorderDialog();
+      this.borderDialog.acId = row.id;
+      this.borderDialog.aId = row.aId;
+      getProductLine(row.id).then((response) => {
+        this.borderDialog.configData =
+          response.data.borderLine !== "" ? response.data.borderLine : "";
+        this.borderDialog.cId = response.data.cId;
+        this.borderDialog.nId = response.data.nId;
+        this.borderDialog.show = true;
+      });
+    },
+    /** 人员计数区域修改按钮操作 */
+    handleDrawPeopleCountLine(row) {
+      this.resetPeopleCountDialog();
+      this.peopleCountDialog.acId = row.id;
+      this.peopleCountDialog.aId = row.aId;
+      getExtendLine(row.id).then((response) => {
+        this.peopleCountDialog.configData =
+          response.data.hideField !== "" ? response.data.hideField : "";
+        this.peopleCountDialog.cId = response.data.cId;
+        this.peopleCountDialog.nId = response.data.nId;
+        this.peopleCountDialog.show = true;
+      });
+    },
+    // 表单重置
+    resetInterestedDialog() {
+      this.interestedDialog = {
+        show: false,
+        acId: 0,
+        cId: 0,
+        aId: 0,
+        nId: 0,
+        configData: undefined
+      };
+    },
+    resetDetectionDialog() {
+      this.detectionDialog = {
+        show: false,
+        acId: 0,
+        cId: 0,
+        aId: 0,
+        nId: 0,
+        configData: undefined
+      };
+    },
+    resetShieldDialog() {
+      this.shieldDialog = {
+        show: false,
+        acId: 0,
+        cId: 0,
+        aId: 0,
+        nId: 0,
+        configData: undefined
+      };
+    },
+    // 表单重置
+    resetBorderDialog() {
+      this.borderDialog = {
+        show: false,
+        acId: 0,
+        cId: 0,
+        aId: 0,
+        nId: 0,
+        configData: undefined
+      };
+    },
+    resetPeopleCountDialog() {
+      this.peopleCountDialog = {
+        show: false,
+        acId: 0,
+        cId: 0,
+        aId: 0,
+        nId: 0,
+        configData: undefined
+      };
     }
   }
 };
@@ -1757,5 +2155,9 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-align: center;
+  padding: 0 5px;
+}
+.duration input {
+  padding: 0 0 0 10px;
 }
 </style>

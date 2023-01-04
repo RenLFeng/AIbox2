@@ -4,7 +4,7 @@
       <div class="main-box flow-history-wrap">
         <el-card class="box-card">
           <div class="container">
-            <el-row style="padding: 20px 0">
+            <el-row>
               <el-form
                 ref="formref"
                 class="formdata-wrap"
@@ -18,7 +18,7 @@
                     placeholder="请输入流程名称"
                   />
                 </el-form-item>
-                <el-form-item class="steps">
+                <el-form-item class="steps" label="流程状态:">
                   <el-select
                     v-model="seachForm.status"
                     placeholder="请选择流程状态"
@@ -37,9 +37,11 @@
                     v-model="dateValue"
                     type="daterange"
                     range-separator="至"
-                    value-format="yyyy-MM-dd"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    format="yyyy 年 MM 月 dd 日"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    :default-time="['00:00:00', '23:59:59']"
                   />
                 </el-form-item>
                 <el-form-item>
@@ -57,31 +59,35 @@
               </el-form>
             </el-row>
             <div class="table-wrap">
-              <el-table :data="tableDataList" style="width: 100%">
-                <el-table-column label="流程名称">
+              <el-table
+                v-loading="loading"
+                :data="tableDataList"
+                style="width: 100%"
+              >
+                <el-table-column label="流程名称" align="center">
                   <template slot-scope="scope">
                     <span>{{ scope.row.nodeName }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="开始时间">
+                <el-table-column label="开始时间" align="center">
                   <template slot-scope="scope">
                     <span>{{
                       scope.row.startAt ? parseTime(scope.row.startAt) : "-"
                     }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="结束时间">
+                <el-table-column label="结束时间" align="center">
                   <template slot-scope="scope">
                     <span>{{
                       scope.row.endAt ? parseTime(scope.row.endAt) : "-"
                     }}</span></template>
                 </el-table-column>
-                <el-table-column label="流程状态">
+                <el-table-column label="流程状态" align="center">
                   <template slot-scope="scope">
                     <span>{{ showFlowStatesText(scope.row.status) }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column fixed="right" label="操作">
+                <el-table-column fixed="right" label="操作" align="center">
                   <template slot-scope="scope">
                     <el-button
                       type="text"
@@ -104,7 +110,7 @@
             :total="total"
             :page.sync="queryParams.pageIndex"
             :limit.sync="queryParams.pageSize"
-            @pagination="() => {}"
+            @pagination="getLists(queryParams)"
           />
         </el-card>
         <el-dialog
@@ -116,7 +122,7 @@
             <div class="slot-title">流程详情</div>
             <div class="flow-name">
               <p>
-                <span class="color-tit">名称:&nbsp;</span><span>{{ curFlowData.nodeName }}</span>
+                <span>名称:&nbsp;</span><span>{{ curFlowData.nodeName }}</span>
               </p>
               <p class="flow-status">
                 <el-tag :type="`${curFlowData.status ? 'success' : 'info'}`">{{
@@ -126,18 +132,14 @@
             </div>
           </div>
           <div class="detil-lists h100">
-            <h3 class="divider" style="margin: 0">
-              流程：(<span>{{ curFlowData.children.length }}</span>)
-            </h3>
             <el-table
               :data="curFlowData.children"
               style="width: 100%"
               class="detil-table"
               :style="'height: 100%;    overflow: auto;'"
-              :show-header="false"
               :stripe="true"
             >
-              <el-table-column label="" :show-overflow-tooltip="true">
+              <el-table-column :label="`流程：${curFlowData.children.length}`">
                 <template slot-scope="scope">
                   <div style="position: relative; padding-left: 35px">
                     <span class="sort-index position-l">{{
@@ -147,26 +149,26 @@
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column label="" :show-overflow-tooltip="true">
+              <el-table-column label="时间">
                 <template slot-scope="scope">
                   <span>{{
                     scope.row.startAt ? parseTime(scope.row.startAt) : "-"
                   }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="" :show-overflow-tooltip="true">
+              <el-table-column label="摄像头">
                 <template slot-scope="scope">
                   <span>{{
                     scope.row.camName ? scope.row.camName : "-"
                   }}</span></template>
               </el-table-column>
-              <el-table-column label="" :show-overflow-tooltip="true">
+              <el-table-column label="算法名称">
                 <template slot-scope="scope">
                   <span>{{
                     scope.row.aiName ? scope.row.aiName : "-"
                   }}</span></template>
               </el-table-column>
-              <el-table-column label="">
+              <el-table-column label="抓拍图片">
                 <template slot-scope="scope">
                   <span v-if="!scope.row.imgFilePath">-</span>
                   <div v-else>
@@ -207,6 +209,21 @@
 
 <script>
 import { sysFlowData } from "@/api/box/sys-ai";
+import { parseTime } from "@/utils/costum";
+const curDate = () => {
+  const f_date = new Date();
+  const f_y = f_date.getFullYear();
+  const f_m = f_date.getMonth() + 1;
+  const f_d = f_date.getDate();
+  const f_date_str = `${f_y}-${f_m}-${f_d} 00:00:00`;
+  let l_date = new Date().getTime() + 86400000;
+  l_date = new Date(l_date);
+  const l_y = l_date.getFullYear();
+  const l_m = l_date.getMonth() + 1;
+  const l_d = l_date.getDate();
+  const l_date_str = `${l_y}-${l_m}-${l_d} 23:59:59`;
+  return [parseTime(f_date_str), parseTime(l_date_str)];
+};
 const flowStatusLists = [
   {
     label: "进行中",
@@ -222,6 +239,7 @@ export default {
   components: {},
   data() {
     return {
+      loading: false,
       show: true,
       flowStatusLists,
       seachForm: {
@@ -231,7 +249,7 @@ export default {
         beginTime: "",
         endTime: ""
       },
-      dateValue: [],
+      dateValue: curDate(),
       tableDataList: [],
       openDeiltDialog: false,
       curFlowData: {
@@ -239,10 +257,21 @@ export default {
       },
       total: 0,
       queryParams: {
+        createdAtOrder: "desc",
         pageIndex: 1,
-        pageSize: 20
+        pageSize: 10,
+        beginTime: "",
+        endTime: ""
       }
     };
+  },
+  computed: {
+    _beginTime() {
+      return `${this.dateValue[0]}`;
+    },
+    _endTime() {
+      return `${this.dateValue[1]}`;
+    }
   },
   activated() {
     this.getLists(this.queryParams);
@@ -250,17 +279,23 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    async getLists(queryData = "") {
+    async getLists(queryData = {}) {
+      this.loading = true;
+      this.setFiletime(queryData);
+      let temp = [];
       const { data } = await sysFlowData(queryData);
-      this.tableDataList = data;
+      if (data.count) {
+        this.total = data.count;
+      }
+      if (data && data.list && Array.isArray(data.list)) {
+        temp = data.list;
+      }
+      this.tableDataList = temp;
+      this.loading = false;
     },
     handleSeach(type) {
       switch (type) {
         case "query":
-          if (this.dateValue && this.dateValue.length) {
-            this.seachForm["beginTime"] = `${this.dateValue[0]} 00:00:00`;
-            this.seachForm["endTime"] = `${this.dateValue[1]} 23:59:59`;
-          }
           this.getLists(this.seachForm);
           break;
         case "reset":
@@ -270,7 +305,8 @@ export default {
             beginTime: "",
             endTime: ""
           };
-          this.dateValue = [];
+          this.dateValue = curDate();
+          this.getLists(this.queryParams);
           break;
       }
     },
@@ -309,6 +345,12 @@ export default {
         }
       }
       return "未开始";
+    },
+    setFiletime(queryParams = {}) {
+      if (this.dateValue && this.dateValue.length) {
+        queryParams["beginTime"] = `${this.dateValue[0]}`;
+        queryParams["endTime"] = `${this.dateValue[1]}`;
+      }
     }
   }
 };
@@ -365,19 +407,19 @@ export default {
       display: inline-block;
       width: 20px;
       height: 20px;
-      border: 1px solid #409eff;
+      border: 1px solid #7558f4;
       border-radius: 50%;
       text-align: center;
       line-height: 20px;
       font-size: 12px;
       margin-right: 5px;
-      background: #409eff;
+      background: #7558f4;
       color: #fff;
     }
   }
   .detil-table {
     .endstates {
-      color: #82c3a5;
+      color: #13ce66;
       font-size: 24px;
     }
   }
@@ -390,11 +432,11 @@ export default {
 
 .flow-history-wrap .detil-table .el-table__header-wrapper th {
   background: #fff !important;
-  border-bottom: none;
+  border-bottom: 1px dashed #ccc;
 }
 
 .detil-table .el-table__header-wrapper {
-  height: 20px;
+  /* height: 20px; */
 }
 
 .detil-table.el-table::before {

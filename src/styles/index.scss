@@ -201,7 +201,7 @@ aside {
   z-index: 1000 !important;
 }
 
-
+//!! syh    add common style
 .el-card__header{
   padding: 15px!important;
   box-sizing: border-box;
@@ -248,7 +248,7 @@ aside {
   color: #999;
 }
 .fontb{
-  font-weight: b;
+  font-weight: bold;
 }
 .font24{
   font-size: 24px;
@@ -275,6 +275,12 @@ aside {
   border-bottom: 1px dashed #ccc;
   padding-bottom: 10px;
 }
+.box-s{
+  box-shadow: 2px 4px 10px 3px #ccc;
+}
+.border-r10{
+  border-radius: 10px;
+}
 .w100{
   width: 100%;
 }
@@ -287,11 +293,26 @@ aside {
 .object-fit{
   object-fit: contain;
 }
+.mg-b-10{
+  margin-bottom: 10px;
+}
+.my-dropdown .el-dropdown{
+  width: 70%;
+  .el-button-group button:nth-child(1){
+    width: 70%;
+  }
+  .el-button-group button:nth-child(2){
+    width: 30%;
+  }
+}
 .fulldialog .el-dialog{
   // height: calc(100% - 60px);
   margin: 30px auto;
   border-radius: 10px;
   overflow: auto;
+}
+.max600 .el-dialog{
+ max-width: 600px;
 }
 .fulldialog.h50 .el-dialog{
   height: 50%;
@@ -331,3 +352,25 @@ margin-top: 30px !important;
   left: 0;
   top: 0;
 }
+.el-button--primary {
+  background: linear-gradient(to bottom, #a388ff, #654ef4);
+  border: none;
+}
+.el-button--primary:hover {
+  background: linear-gradient(to bottom, #a388ff, #654ef4);
+  border-color: #8471f6;
+  color: #fff;
+}
+.el-button--primary:focus {
+  background: linear-gradient(to bottom, #a388ff, #654ef4);
+  border-color: #8471f6;
+  color: #FFFFFF;
+}
+.el-message-box .el-message-box__title{
+  color: #7558f4;
+  font-size: 22px;
+}
+.el-message-box .el-message-box__message{
+  // padding: 0 0 0 36px;
+}
+

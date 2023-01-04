@@ -1,10 +1,9 @@
 <template>
-
   <el-dialog
     title="扫描添加盒子"
     width="917px"
     :visible.sync="openByIPVisible"
-    style="padding: 40px;"
+    style="padding: 40px"
     class="searchBox"
   >
     <div v-if="!isShow">
@@ -17,7 +16,12 @@
         <el-row type="flex">
           <el-col :span="3">
             <span
-              style="font-size:14px;position: relative;top: 20%;transform: translateY(-50%)"
+              style="
+                font-size: 14px;
+                position: relative;
+                top: 20%;
+                transform: translateY(-50%);
+              "
             >设备网段</span>
           </el-col>
           <el-col :span="9">
@@ -34,7 +38,13 @@
           </el-col>
           <el-col :span="3">
             <span
-              style="font-size:18px;position: relative;top: 10%;left:25%;transform: translateY(-50%)"
+              style="
+                font-size: 18px;
+                position: relative;
+                top: 10%;
+                left: 25%;
+                transform: translateY(-50%);
+              "
             >-</span>
           </el-col>
           <el-col :span="9">
@@ -53,14 +63,10 @@
             <el-form-item>
               <el-button
                 type="primary"
-                style="background:linear-gradient(to bottom, #a388ff, #654ef4)"
+                style="background: linear-gradient(to bottom, #a388ff, #654ef4)"
                 @click="handleQueryByIP"
               >
-                <svg-icon
-                  icon-class="newSearch"
-                  style="vertical-align:-2px
-                      "
-                />
+                <svg-icon icon-class="newSearch" style="vertical-align: -2px" />
                 搜索设备
               </el-button>
               <!-- <div class="seek-33" @click="handleQueryByIP">
@@ -87,6 +93,11 @@
         <el-table-column
           type="selection"
           width="55"
+          :selectable="
+            (row) => {
+              return row.boxStatus === '2';
+            }
+          "
           align="center"
         />
         <!-- :selectable="selectInit" -->
@@ -131,7 +142,11 @@
             {{ boxTypeFormat(scope.row) }}
           </template>
         </el-table-column>
-        <el-table-column label="状态" align="center" :formatter="boxStatusFormat">
+        <el-table-column
+          label="状态"
+          align="center"
+          :formatter="boxStatusFormat"
+        >
           <template slot-scope="scope">
             <el-tag
               :type="scope.row.boxStatus === '2' ? 'success' : 'danger'"
@@ -155,20 +170,17 @@
       <div class="img">
         <img src="../../../../assets/logo/nofind.png" alt="">
       </div>
-      <div class="text">
-        未搜索到盒子！
-      </div>
+      <div class="text">未搜索到盒子！</div>
       <div class="add" @click="show">添加</div>
     </div>
   </el-dialog>
-
 </template>
 <script>
-import { addSysBoxByIP, listSysBoxByIP } from '@/api/box/sys-box'
+import { addSysBoxByIP, listSysBoxByIP } from "@/api/box/sys-box";
 // import IpAddress from './IpAddress.vue'
-import ipInput from './ipInput'
+import ipInput from "./ipInput";
 export default {
-  name: 'AutoSearchBox',
+  name: "AutoSearchBox",
   components: {
     // IpAddress
     ipInput
@@ -192,72 +204,73 @@ export default {
         beginIP: undefined,
         endIP: undefined
       },
-      beginIP: '',
-      endIP: '',
+      beginIP: "",
+      endIP: "",
       multipleSelection: [],
       sysboxListByIP: []
-    }
+    };
   },
   created() {
-    this.getHost(this.$store.state.system.info.sys_app_ip)
-    const roles = this.$store.state.user.roles
-    if (roles.indexOf('normal') !== -1) {
+    this.getHost(this.$store.state.system.info.sys_app_ip);
+    const roles = this.$store.state.user.roles;
+    if (roles.indexOf("normal") !== -1) {
       // 修改对应角色名，控制权限
-      this.showCol = false
+      this.showCol = false;
     }
   },
   activated() {
-    this.getDicts('sys_box_status').then(response => {
-      this.boxStatusOptions = response.data
-    })
+    this.getDicts("sys_box_status").then((response) => {
+      this.boxStatusOptions = response.data;
+    });
   },
   methods: {
     // 展开状态
     show() {
-      this.isShow = true
+      this.isShow = true;
     },
     getIpAddr(ip) {
       // console.info('getIpAddr' + JSON.stringify(ip))
-      this.beginIP = ip.ip
+      this.beginIP = ip.ip;
     },
     getEndIpAddr(ip) {
-      this.endIP = ip.ip
+      this.endIP = ip.ip;
     },
     /** 扫描添加盒子状态判断禁用 2正常其他可以 */
     selectInit(row, index) {
-      console.log(row, 'row')
-      return row.boxStatus === '2' && row.sysAiName !== ''
+      console.log(row, "row");
+      return row.boxStatus === "2" && row.sysAiName !== "";
     },
     open(data) {
-      this.sysboxListByIP = []
-      this.$data.queryParamsByIP = this.$options.data.call(this).queryParamsByIP
-      this.openByIPVisible = true
+      this.sysboxListByIP = [];
+      this.$data.queryParamsByIP =
+        this.$options.data.call(this).queryParamsByIP;
+      this.openByIPVisible = true;
     },
     // 多选框选中数据
     handleSelectionChangeByIP(selection) {
       // console.log(selection)
-      this.multipleSelection = selection
+      this.multipleSelection = selection;
     },
     /** 搜索按钮操作 */
     handleQueryByIP() {
-      this.queryParamsByIP.pageIndex = 1
-      this.queryParamsByIP.beginIP = this.beginIP
-      this.queryParamsByIP.endIP = this.endIP
-      this.getListByIP()
+      this.queryParamsByIP.pageIndex = 1;
+      this.queryParamsByIP.beginIP = this.beginIP;
+      this.queryParamsByIP.endIP = this.endIP;
+      this.getListByIP();
     },
     getListByIP() {
-      this.$refs['queryFormByIP'].validate(valid => {
+      this.$refs["queryFormByIP"].validate((valid) => {
         if (valid) {
-          this.loadingByIP = true
+          this.loadingByIP = true;
           listSysBoxByIP(
             this.addDateRange(this.queryParamsByIP, this.dateRange)
-          ).then(response => {
-            this.sysboxListByIP = response.data.list
-            this.total = response.data.count
-            this.loadingByIP = false
-          })
+          ).then((response) => {
+            this.sysboxListByIP = response.data.list;
+            this.total = response.data.count;
+            this.loadingByIP = false;
+          });
         }
-      })
+      });
     },
     // getIpAddr(ip) {
     //   this.beginIP = this.$store.state.system.info.sys_app_ip
@@ -267,39 +280,39 @@ export default {
     //   this.endIP = ipSet
     // },
     getHost(ip) {
-      const begIndex = ip.lastIndexOf('.')
-      const rootIp = ip.substring(0, begIndex)
-      this.endIP = rootIp + '.255'
-      this.beginIP = rootIp + '.1'
+      const begIndex = ip.lastIndexOf(".");
+      const rootIp = ip.substring(0, begIndex);
+      this.endIP = rootIp + ".255";
+      this.beginIP = rootIp + ".1";
     },
     submitFormByIP: function() {
-      addSysBoxByIP(this.multipleSelection).then(response => {
+      addSysBoxByIP(this.multipleSelection).then((response) => {
         if (response.code === 200) {
-          this.msgSuccess('新增成功')
-          this.openByIPVisible = false
-          this.$emit('success')
+          this.msgSuccess("新增成功");
+          this.openByIPVisible = false;
+          this.$emit("success");
         } else {
-          this.msgError(response.msg)
+          this.msgError(response.msg);
         }
-      })
+      });
     },
     boxTypeFormat(row) {
-      return this.selectDictLabel(this.boxTypeOptions, row.boxType)
+      return this.selectDictLabel(this.boxTypeOptions, row.boxType);
     },
     boxStatusFormat(row) {
-      return this.selectDictLabel(this.boxStatusOptions, row.boxStatus)
+      return this.selectDictLabel(this.boxStatusOptions, row.boxStatus);
     },
     fedStatusFormat(row) {
-      return this.selectDictLabel(this.fedStatusOptions, row.fedStatus)
+      return this.selectDictLabel(this.fedStatusOptions, row.fedStatus);
     },
     productNameFormat(row) {
-      return this.selectDictLabel(this.sysProductNameOptions, row.pId)
+      return this.selectDictLabel(this.sysProductNameOptions, row.pId);
     },
     deptNameFormat(row) {
-      return this.selectDictLabel(this.sysDeptNameOptions, row.deptId)
+      return this.selectDictLabel(this.sysDeptNameOptions, row.deptId);
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 .box-add {
@@ -307,13 +320,13 @@ export default {
   margin: 40px auto;
 
   .el-button--default {
-    color: #C3C1C7;
+    color: #c3c1c7;
     padding: 10px 30px;
   }
 
   .el-button--primary {
     padding: 10px 30px;
-    background: linear-gradient(to bottom, #A388FF, #654EF4);
+    background: linear-gradient(to bottom, #a388ff, #654ef4);
   }
 }
 
@@ -330,7 +343,6 @@ export default {
       }
     }
   }
-
 }
 
 .empty {

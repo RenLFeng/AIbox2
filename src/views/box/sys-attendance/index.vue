@@ -553,16 +553,13 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      this.$confirm(
-        '是否确认解散组名称为"' + row.groupName + '"的数据项?',
-        "警告",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消"
-        }
-      )
+      this.$confirm("确认解散该组吗？解散后将不可回复", "警告", {
+        center: true,
+        confirmButtonText: "确认解散",
+        cancelButtonText: "取消"
+      })
         .then(function() {
-          return delSysAttendance({ id: row.groupId })
+          return delSysAttendance({ id: row.groupId });
         })
         .then((response) => {
           if (response.code === 200) {
@@ -598,19 +595,19 @@ export default {
       // 初始化weosocket
       // console.log(this.$store.state.user.token)
       const wsuri =
-        'ws://' +
+        "ws://" +
         this.$store.state.system.info.sys_app_ip +
-        ':8880/ws/' +
+        ":8880/ws/" +
         this.id +
-        '/' +
+        "/" +
         this.group +
-        '?token=' +
-        this.$store.state.user.token
-      this.websock = new WebSocket(wsuri)
-      this.websock.onmessage = this.websocketonmessage
-      this.websock.onopen = this.websocketonopen
-      this.websock.onerror = this.websocketonerror
-      this.websock.onclose = this.websocketclose
+        "?token=" +
+        this.$store.state.user.token;
+      this.websock = new WebSocket(wsuri);
+      this.websock.onmessage = this.websocketonmessage;
+      this.websock.onopen = this.websocketonopen;
+      this.websock.onerror = this.websocketonerror;
+      this.websock.onclose = this.websocketclose;
     },
     websocketonopen() {
       // 连接建立之后执行send方法发送数据
@@ -678,12 +675,13 @@ export default {
         inputValue: row.amount,
         inputValidator: inputValidator
       }).then(({ value }) => {
-        attendancesetAmount({ amount: value }, { groupId: row.groupId }).then(
-          (res) => {
-            row.amount = value;
-            this.$message.success("设置成功");
-          }
-        );
+        attendancesetAmount(
+          { amount: parseInt(value) },
+          { groupId: row.groupId }
+        ).then((res) => {
+          row.amount = value;
+          this.$message.success("设置成功");
+        });
         // doing....
       });
     }

@@ -1,10 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import Router from "vue-router";
 
-Vue.use(Router)
+Vue.use(Router);
 
 /* Layout */
-import Layout from '@/layout'
+import Layout from "@/layout";
 
 /* Router Modules */
 // import componentsRouter from './modules/components'
@@ -40,116 +40,128 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
-    path: '/redirect',
+    path: "/redirect",
     component: Layout,
     hidden: true,
     children: [
       {
-        path: '/redirect/:path*',
-        component: () => import('@/views/redirect/index')
+        path: "/redirect/:path*",
+        component: () => import("@/views/redirect/index")
       }
     ]
   },
   {
-    path: '/login',
-    component: () => import('@/views/login/index'),
+    path: "/login",
+    component: () => import("@/views/login/index"),
     hidden: true
   },
   {
-    path: '/auth-redirect',
-    component: () => import('@/views/login/auth-redirect'),
+    path: "/auth-redirect",
+    component: () => import("@/views/login/auth-redirect"),
     hidden: true
   },
   {
-    path: '/404',
-    component: () => import('@/views/error-page/404'),
+    path: "/404",
+    component: () => import("@/views/error-page/404"),
     hidden: true
   },
   {
-    path: '/401',
-    component: () => import('@/views/error-page/401'),
+    path: "/401",
+    component: () => import("@/views/error-page/401"),
     hidden: true
   },
   {
-    path: '/',
+    path: "/",
     component: Layout,
-    redirect: '/dashboard',
+    redirect: "/dashboard",
     children: [
       {
         // path: 'dashboard',
-        path: 'dashboard',
+        path: "dashboard",
         // component: () => import('@/views/dashboard/index'),
-        component: () => import('@/views/box/sys-alarm-data/index'),
+        component: () => import("@/views/box/sys-alarm-data/index"),
         // component: () => import('@/views/box/sys-screen/webImg'),
-        name: 'Dashboard',
+        name: "Dashboard",
         // meta: { title: '首页', icon: 'dashboard', affix: true }
-        meta: { title: '首页', icon: 'dashboard', affix: true }
+        meta: { title: "首页", icon: "dashboard", affix: true }
       }
     ]
   },
   {
-    path: '/profile',
+    path: "/profile",
     component: Layout,
-    redirect: '/profile/index',
+    redirect: "/profile/index",
     hidden: true,
     children: [
       {
-        path: 'index',
-        component: () => import('@/views/profile/index'),
-        name: 'Profile',
-        meta: { title: '个人中心', icon: 'user', noCache: true }
+        path: "index",
+        component: () => import("@/views/profile/index"),
+        name: "Profile",
+        meta: { title: "个人中心", icon: "user", noCache: true }
       }
     ]
   },
   {
-    path: '/sys-box',
+    path: "/sys-box",
     component: Layout,
-    redirect: '/sys-box/npuList',
+    redirect: "/sys-box/npuList",
     hidden: true,
     children: [
       {
-        path: 'npuList',
-        component: () => import('@/views/box/sys-box/npu/list'),
-        name: 'NpuList',
-        meta: { title: '算法配置', icon: 'user', noCache: true }
+        path: "npuList",
+        component: () => import("@/views/box/sys-box/npu/list"),
+        name: "NpuList",
+        meta: { title: "算法配置", icon: "user", noCache: true }
+      },
+      {
+        path: "/box/plcList",
+        component: () => import("@/views/box/plc-config"),
+        name: "plcList",
+        meta: { title: "plc管理", icon: "user", noCache: true }
+      },
+      {
+        path: "/box/ld",
+        component: () => import("@/views/box/ld"),
+        name: "ld",
+        meta: { title: "算法联动", icon: "user", noCache: true }
       }
     ]
   },
   {
-    path: '/sys-camera',
+    path: "/sys-camera",
     component: Layout,
-    redirect: '/sys-camera/aiList',
+    redirect: "/sys-camera/aiList",
     hidden: true,
     children: [
       {
-        path: 'aiList',
-        component: () => import('@/views/box/sys-ai-config/index'),
-        name: 'AiList',
-        meta: { title: '关联算法', icon: 'user', noCache: true }
+        path: "aiList",
+        component: () => import("@/views/box/sys-ai-config/index"),
+        name: "AiList",
+        meta: { title: "关联算法", icon: "user", noCache: true }
       }
     ]
   }
-]
+];
 
 /**
  * asyncRoutes
  * the routes that need to be dynamically loaded based on user roles
  */
-export const asyncRoutes = []
+export const asyncRoutes = [];
 
 const createRouter = () =>
   new Router({
-    mode: 'history', // require service support
+    mode: "history", // require service support
     scrollBehavior: () => ({ y: 0 }),
     routes: constantRoutes
-  })
+  });
 
-const router = createRouter()
+const router = createRouter();
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher; // reset router
 }
 
-export default router
+export default router;
